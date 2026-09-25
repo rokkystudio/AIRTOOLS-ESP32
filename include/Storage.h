@@ -38,12 +38,13 @@ public:
     /**
      * Appends one captured 802.11 frame to the latest PCAP for the supplied BSSID.
      */
-    void recordCaptureFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length);
+    void recordCaptureFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck);
 
 private:
     struct HandshakeEntry
     {
         bool used = false;
+        bool saved = false;
         uint8_t bssid[6] = {};
         uint32_t storedTick = 0;
         uint32_t capturedEpoch = 0;
@@ -51,10 +52,15 @@ private:
         uint16_t frameCount = 0;
         char fileName[18] = {};
         char essid[33] = {};
+        bool hasMic = false;
+        bool hasAck = false;
+        uint16_t hsFrameCount = 0;
+        uint16_t hsFrameLength[AIRTOOLS_HANDSHAKE_MAX_FRAMES] = {};
+        uint8_t hsFrames[AIRTOOLS_HANDSHAKE_MAX_FRAMES][AIRTOOLS_HANDSHAKE_CAPTURE_BYTES] = {};
     };
 
     HandshakeEntry *findOrCreateEntry(const uint8_t *bssid);
-    bool appendPcapPacket(const char *path, const uint8_t *frame, uint32_t length, bool createHeader);
+    bool writeHandshakePcap(HandshakeEntry &entry);
     String pathFor(const char *fileName) const;
     String macFileName(const uint8_t *bssid) const;
     bool isKnownHandshakeFile(const String &fileName) const;

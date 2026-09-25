@@ -108,7 +108,7 @@ String Storage::formatHandshakes() const
     response += "# bssid,stored_tick,captured_epoch,generation,frames,file,essid\n";
 
     for (const auto &entry : entries) {
-        if (!entry.used) {
+        if (!entry.used || !entry.saved) {
             continue;
         }
 
@@ -195,9 +195,9 @@ void Storage::streamHandshakeDownload(const String &fileName, HexChunkWriter wri
     file.close();
 }
 
-void Storage::recordCaptureFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length)
+void Storage::recordCaptureFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck)
 {
-    if (!mounted || !bssid || !frame || length == 0 || length > AIRTOOLS_MAX_CAPTURE_FRAME_BYTES) {
+    if (!mounted || !bssid || !frame || length == 0) {
         return;
     }
 
@@ -212,15 +212,39 @@ void Storage::recordCaptureFrame(const uint8_t *bssid, const char *essid, const 
     }
 
     copyEssid(*entry, essid);
-    bool createHeader = entry->frameCount == 0;
-    if (!appendPcapPacket(pathFor(entry->fileName).c_str(), frame, length, createHeader)) {
-        return;
+
+    uint16_t captureLength = length > AIRTOOLS_HANDSHAKE_CAPTURE_BYTES
+        ? AIRTOOLS_HANDSHAKE_CAPTURE_BYTES
+        : static_cast<uint16_t>(length);
+
+    uint16_t slot;
+    if (entry->hsFrameCount < AIRTOOLS_HANDSHAKE_MAX_FRAMES) {
+        slot = entry->hsFrameCount++;
+    }
+    else {
+        for (uint16_t i = 1; i < AIRTOOLS_HANDSHAKE_MAX_FRAMES; ++i) {
+            memcpy(entry->hsFrames[i - 1], entry->hsFrames[i], AIRTOOLS_HANDSHAKE_CAPTURE_BYTES);
+            entry->hsFrameLength[i - 1] = entry->hsFrameLength[i];
+        }
+        slot = AIRTOOLS_HANDSHAKE_MAX_FRAMES - 1;
+    }
+    memcpy(entry->hsFrames[slot], frame, captureLength);
+    entry->hsFrameLength[slot] = captureLength;
+
+    if (hasMic) {
+        entry->hasMic = true;
+    }
+    if (hasAck) {
+        entry->hasAck = true;
     }
 
-    entry->frameCount++;
-    entry->storedTick = millis();
-    if (entry->generation == 0) {
-        entry->generation = 1;
+    // Match the MIPS airodump heuristic: persist only a complete handshake
+    // (at least two EAPOL-Key frames carrying both MIC and ACK bits).
+    if (entry->hsFrameCount >= 2 && entry->hasMic && entry->hasAck && writeHandshakePcap(*entry)) {
+        entry->saved = true;
+        entry->frameCount = entry->hsFrameCount;
+        entry->storedTick = millis();
+        entry->generation = entry->generation == 0 ? 1 : entry->generation + 1;
     }
 }
 
@@ -243,10 +267,14 @@ Storage::HandshakeEntry *Storage::findOrCreateEntry(const uint8_t *bssid)
     }
 
     freeSlot->used = true;
+    freeSlot->saved = false;
     memcpy(freeSlot->bssid, bssid, 6);
     freeSlot->storedTick = millis();
-    freeSlot->generation = 1;
+    freeSlot->generation = 0;
     freeSlot->frameCount = 0;
+    freeSlot->hasMic = false;
+    freeSlot->hasAck = false;
+    freeSlot->hsFrameCount = 0;
     String fileName = macFileName(bssid);
     strncpy(freeSlot->fileName, fileName.c_str(), sizeof(freeSlot->fileName) - 1);
     freeSlot->fileName[sizeof(freeSlot->fileName) - 1] = 0;
@@ -254,46 +282,51 @@ Storage::HandshakeEntry *Storage::findOrCreateEntry(const uint8_t *bssid)
     return freeSlot;
 }
 
-bool Storage::appendPcapPacket(const char *path, const uint8_t *frame, uint32_t length, bool createHeader)
+bool Storage::writeHandshakePcap(HandshakeEntry &entry)
 {
+    String path = pathFor(entry.fileName);
 #if AIRTOOLS_HAS_SD
-    if (createHeader && SD.exists(path)) {
-        SD.remove(path);
+    if (SD.exists(path.c_str())) {
+        SD.remove(path.c_str());
     }
-    File file = SD.open(path, createHeader ? FILE_WRITE : FILE_APPEND);
+    File file = SD.open(path.c_str(), FILE_WRITE);
 #else
-    File file = LittleFS.open(path, createHeader ? "w" : "a");
+    File file = LittleFS.open(path.c_str(), "w");
 #endif
     if (!file) {
         return false;
     }
 
-    if (createHeader) {
-        PcapGlobalHeader globalHeader;
-        globalHeader.magic = PCAP_MAGIC;
-        globalHeader.major = PCAP_VERSION_MAJOR;
-        globalHeader.minor = PCAP_VERSION_MINOR;
-        globalHeader.zone = 0;
-        globalHeader.sigfigs = 0;
-        globalHeader.snaplen = 2048;
-        globalHeader.network = PCAP_LINKTYPE_IEEE802_11;
-        if (file.write(reinterpret_cast<const uint8_t *>(&globalHeader), sizeof(globalHeader)) != sizeof(globalHeader)) {
+    PcapGlobalHeader globalHeader;
+    globalHeader.magic = PCAP_MAGIC;
+    globalHeader.major = PCAP_VERSION_MAJOR;
+    globalHeader.minor = PCAP_VERSION_MINOR;
+    globalHeader.zone = 0;
+    globalHeader.sigfigs = 0;
+    globalHeader.snaplen = 2048;
+    globalHeader.network = PCAP_LINKTYPE_IEEE802_11;
+    if (file.write(reinterpret_cast<const uint8_t *>(&globalHeader), sizeof(globalHeader)) != sizeof(globalHeader)) {
+        file.close();
+        return false;
+    }
+
+    uint32_t now = millis();
+    for (uint16_t index = 0; index < entry.hsFrameCount; ++index) {
+        PcapPacketHeader packetHeader;
+        packetHeader.seconds = now / 1000;
+        packetHeader.microseconds = (now % 1000) * 1000;
+        packetHeader.capturedLength = entry.hsFrameLength[index];
+        packetHeader.originalLength = entry.hsFrameLength[index];
+
+        bool ok = file.write(reinterpret_cast<const uint8_t *>(&packetHeader), sizeof(packetHeader)) == sizeof(packetHeader) &&
+            file.write(entry.hsFrames[index], entry.hsFrameLength[index]) == entry.hsFrameLength[index];
+        if (!ok) {
             file.close();
             return false;
         }
     }
-
-    uint32_t now = millis();
-    PcapPacketHeader packetHeader;
-    packetHeader.seconds = now / 1000;
-    packetHeader.microseconds = (now % 1000) * 1000;
-    packetHeader.capturedLength = length;
-    packetHeader.originalLength = length;
-
-    bool ok = file.write(reinterpret_cast<const uint8_t *>(&packetHeader), sizeof(packetHeader)) == sizeof(packetHeader) &&
-        file.write(frame, length) == length;
     file.close();
-    return ok;
+    return true;
 }
 
 String Storage::pathFor(const char *fileName) const
@@ -314,7 +347,7 @@ String Storage::macFileName(const uint8_t *bssid) const
 bool Storage::isKnownHandshakeFile(const String &fileName) const
 {
     for (const auto &entry : entries) {
-        if (entry.used && fileName == entry.fileName) {
+        if (entry.used && entry.saved && fileName == entry.fileName) {
             return true;
         }
     }

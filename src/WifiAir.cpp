@@ -464,10 +464,22 @@ void WifiAir::recordEapolIfPresent(const uint8_t *bssid, const uint8_t *frame, i
         return;
     }
 
-    enqueueCaptureFrame(bssid, frame, static_cast<uint32_t>(length));
+    // EAPOL payload begins after the 8-byte LLC/SNAP header.
+    int eapolOffset = headerLength + 8;
+    if (length < eapolOffset + 8) {
+        return;
+    }
+    if (frame[eapolOffset + 1] != 3) {
+        return;  // only EAPOL-Key (WPA handshake) frames
+    }
+    uint16_t keyInfo = (static_cast<uint16_t>(frame[eapolOffset + 5]) << 8) | frame[eapolOffset + 6];
+    bool hasMic = (keyInfo & 0x0100) != 0;
+    bool hasAck = (keyInfo & 0x0080) != 0;
+
+    enqueueCaptureFrame(bssid, frame, static_cast<uint32_t>(length), hasMic, hasAck);
 }
 
-void WifiAir::enqueueCaptureFrame(const uint8_t *bssid, const uint8_t *frame, uint32_t length)
+void WifiAir::enqueueCaptureFrame(const uint8_t *bssid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck)
 {
     if (!captureQueue || !frame || length == 0 || length > AIRTOOLS_MAX_CAPTURE_FRAME_BYTES) {
         return;
@@ -475,6 +487,8 @@ void WifiAir::enqueueCaptureFrame(const uint8_t *bssid, const uint8_t *frame, ui
 
     memcpy(pendingCaptureFrame.bssid, bssid, 6);
     pendingCaptureFrame.length = length;
+    pendingCaptureFrame.hasMic = hasMic;
+    pendingCaptureFrame.hasAck = hasAck;
     memcpy(pendingCaptureFrame.data, frame, length);
 
     // Non-blocking: drop the frame when the consumer cannot keep up.
@@ -490,7 +504,8 @@ void WifiAir::drainCaptureQueue()
     while (xQueueReceive(captureQueue, &drainCaptureFrame, 0) == pdTRUE) {
         char essid[33];
         getEssid(drainCaptureFrame.bssid, essid, sizeof(essid));
-        storage->recordCaptureFrame(drainCaptureFrame.bssid, essid, drainCaptureFrame.data, drainCaptureFrame.length);
+        storage->recordCaptureFrame(drainCaptureFrame.bssid, essid, drainCaptureFrame.data, drainCaptureFrame.length,
+                                    drainCaptureFrame.hasMic, drainCaptureFrame.hasAck);
     }
 }
 

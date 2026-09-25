@@ -82,6 +82,8 @@ private:
     {
         uint8_t bssid[6];
         uint32_t length;
+        bool hasMic;
+        bool hasAck;
         uint8_t data[AIRTOOLS_MAX_CAPTURE_FRAME_BYTES];
     };
 
@@ -92,7 +94,7 @@ private:
     void accountAp(const uint8_t *bssid, const char *essid, int channel, int rssi, bool beacon, bool probe);
     void accountClient(const uint8_t *bssid, const uint8_t *station, int rssi);
     void recordEapolIfPresent(const uint8_t *bssid, const uint8_t *frame, int length, uint8_t subtype, bool toDs, bool fromDs);
-    void enqueueCaptureFrame(const uint8_t *bssid, const uint8_t *frame, uint32_t length);
+    void enqueueCaptureFrame(const uint8_t *bssid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck);
     void drainCaptureQueue();
     const char *essidForLocked(const uint8_t *bssid) const;
     void getEssid(const uint8_t *bssid, char *out, size_t outLength) const;
