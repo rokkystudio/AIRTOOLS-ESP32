@@ -180,13 +180,13 @@ String AirtoolsCommandRouter::handleReplay(const String &command)
     if (!wifiAir.getTarget(bssid, &channel)) {
         return "ERR replay_no_target\n";
     }
-
-    int count = valueOf(command, "count").toInt();
-    if (count < 1) {
-        count = 5;
+    if (!wifiAir.isScanning()) {
+        return "ERR replay_capture_inactive\n";
     }
-    else if (count > 128) {
-        count = 128;
+
+    int count = 0;
+    if (!parseReplayCount(command, count)) {
+        return "ERR invalid_count\n";
     }
 
     int sent = wifiAir.sendDeauth(bssid, channel, hasStation ? station : nullptr, count);
@@ -203,6 +203,34 @@ String AirtoolsCommandRouter::handleReplay(const String &command)
     response += sent;
     response += " raw_tx=supported\n";
     return response;
+}
+
+bool AirtoolsCommandRouter::parseReplayCount(const String &command, int &count) const
+{
+    String countText = valueOf(command, "count");
+    if (countText.length() == 0) {
+        count = 5;
+        return true;
+    }
+
+    int value = 0;
+    for (int index = 0; index < countText.length(); ++index) {
+        char digit = countText[index];
+        if (digit < '0' || digit > '9') {
+            return false;
+        }
+        value = value * 10 + (digit - '0');
+        if (value > 128) {
+            return false;
+        }
+    }
+
+    if (value < 1) {
+        return false;
+    }
+
+    count = value;
+    return true;
 }
 
 String AirtoolsCommandRouter::valueOf(const String &command, const String &key) const

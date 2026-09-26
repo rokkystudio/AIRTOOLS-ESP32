@@ -26,9 +26,9 @@ The firmware treats display, SD and battery telemetry as optional board capabili
 - /handshakes
 - /handshake/download?file=<name>.pcap
 - /aireplay?mode=test&count=<n>
-- /replay?station=<client-mac>
+- /replay?station=<client-mac>&count=<1..128>
 
-`/start` starts promiscuous capture in discovery mode or resumes capture on the selected target. Query parameters accept URL-encoded values from the Android client. `/aireplay?mode=test` reports the firmware aireplay command path and raw TX capability. `/replay?station=<client-mac>` transmits deauthentication frames spoofing the selected BSSID (broadcast when `station` is omitted) so the target station re-associates and a fresh handshake can be captured.
+`/start` starts promiscuous capture in discovery mode or resumes capture on the selected target. `/replay` requires both a selected target and active promiscuous capture; `count` defaults to `5` and explicit values must be decimal `1..128`. While a target is selected, the capture loop stays on the target channel and does not run discovery channel hopping. Query parameters accept URL-encoded values from the Android client. `/aireplay?mode=test` reports the firmware aireplay command path and raw TX capability. `/replay?station=<client-mac>` transmits deauthentication frames spoofing the selected BSSID (broadcast when `station` is omitted) so the target station re-associates and a fresh handshake can be captured.
 
 ## Handshake PCAP
 
