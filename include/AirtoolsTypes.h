@@ -15,6 +15,7 @@ struct AirtoolsNetwork
     uint32_t probes = 0;
     uint32_t data = 0;
     uint32_t lastSeenMs = 0;
+    bool managementQueued = false;
 };
 
 struct AirtoolsClient

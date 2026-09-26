@@ -30,6 +30,10 @@ The firmware treats display, SD and battery telemetry as optional board capabili
 
 `/start` starts promiscuous capture in discovery mode or resumes capture on the selected target. Query parameters accept URL-encoded values from the Android client. `/aireplay?mode=test` reports the firmware aireplay command path and raw TX capability. `/replay?station=<client-mac>` transmits deauthentication frames spoofing the selected BSSID (broadcast when `station` is omitted) so the target station re-associates and a fresh handshake can be captured.
 
+## Handshake PCAP
+
+A saved handshake PCAP contains one real beacon or probe-response frame with a non-empty ESSID followed by the captured EAPOL-Key frames. Storage does not publish a completed handshake until both the management metadata and the EAPOL completion criteria are present. Management frames are queued once per discovered BSSID so normal beacon traffic cannot crowd EAPOL frames out of the bounded capture queue.
+
 ## Build
 
 ```powershell

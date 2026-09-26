@@ -195,6 +195,36 @@ void Storage::streamHandshakeDownload(const String &fileName, HexChunkWriter wri
     file.close();
 }
 
+void Storage::recordManagementFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length)
+{
+    if (!mounted || !bssid || !essid || !essid[0] || !frame || length == 0) {
+        return;
+    }
+
+    EntriesLockGuard lock(entriesMutex);
+    if (!lock.acquired()) {
+        return;
+    }
+
+    HandshakeEntry *entry = findOrCreateEntry(bssid);
+    if (!entry) {
+        return;
+    }
+
+    copyEssid(*entry, essid);
+
+    uint16_t captureLength = length > AIRTOOLS_MANAGEMENT_CAPTURE_BYTES
+        ? AIRTOOLS_MANAGEMENT_CAPTURE_BYTES
+        : static_cast<uint16_t>(length);
+    memcpy(entry->managementFrame, frame, captureLength);
+    entry->managementFrameLength = captureLength;
+    entry->hasManagementFrame = true;
+
+    if (!entry->saved) {
+        persistCompleteHandshake(*entry);
+    }
+}
+
 void Storage::recordCaptureFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck)
 {
     if (!mounted || !bssid || !frame || length == 0) {
@@ -238,14 +268,7 @@ void Storage::recordCaptureFrame(const uint8_t *bssid, const char *essid, const 
         entry->hasAck = true;
     }
 
-    // Match the MIPS airodump heuristic: persist only a complete handshake
-    // (at least two EAPOL-Key frames carrying both MIC and ACK bits).
-    if (entry->hsFrameCount >= 2 && entry->hasMic && entry->hasAck && writeHandshakePcap(*entry)) {
-        entry->saved = true;
-        entry->frameCount = entry->hsFrameCount;
-        entry->storedTick = millis();
-        entry->generation = entry->generation == 0 ? 1 : entry->generation + 1;
-    }
+    persistCompleteHandshake(*entry);
 }
 
 Storage::HandshakeEntry *Storage::findOrCreateEntry(const uint8_t *bssid)
@@ -274,12 +297,31 @@ Storage::HandshakeEntry *Storage::findOrCreateEntry(const uint8_t *bssid)
     freeSlot->frameCount = 0;
     freeSlot->hasMic = false;
     freeSlot->hasAck = false;
+    freeSlot->hasManagementFrame = false;
+    freeSlot->managementFrameLength = 0;
     freeSlot->hsFrameCount = 0;
     String fileName = macFileName(bssid);
     strncpy(freeSlot->fileName, fileName.c_str(), sizeof(freeSlot->fileName) - 1);
     freeSlot->fileName[sizeof(freeSlot->fileName) - 1] = 0;
     freeSlot->essid[0] = 0;
     return freeSlot;
+}
+
+bool Storage::persistCompleteHandshake(HandshakeEntry &entry)
+{
+    if (entry.hsFrameCount < 2 || !entry.hasMic || !entry.hasAck ||
+        !entry.hasManagementFrame || !entry.essid[0]) {
+        return false;
+    }
+    if (!writeHandshakePcap(entry)) {
+        return false;
+    }
+
+    entry.saved = true;
+    entry.frameCount = entry.hsFrameCount + 1;
+    entry.storedTick = millis();
+    entry.generation = entry.generation == 0 ? 1 : entry.generation + 1;
+    return true;
 }
 
 bool Storage::writeHandshakePcap(HandshakeEntry &entry)
@@ -311,6 +353,19 @@ bool Storage::writeHandshakePcap(HandshakeEntry &entry)
     }
 
     uint32_t now = millis();
+
+    PcapPacketHeader managementHeader;
+    managementHeader.seconds = now / 1000;
+    managementHeader.microseconds = (now % 1000) * 1000;
+    managementHeader.capturedLength = entry.managementFrameLength;
+    managementHeader.originalLength = entry.managementFrameLength;
+    bool managementOk = file.write(reinterpret_cast<const uint8_t *>(&managementHeader), sizeof(managementHeader)) == sizeof(managementHeader) &&
+        file.write(entry.managementFrame, entry.managementFrameLength) == entry.managementFrameLength;
+    if (!managementOk) {
+        file.close();
+        return false;
+    }
+
     for (uint16_t index = 0; index < entry.hsFrameCount; ++index) {
         PcapPacketHeader packetHeader;
         packetHeader.seconds = now / 1000;

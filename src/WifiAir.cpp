@@ -414,6 +414,17 @@ void WifiAir::handlePacket(const wifi_promiscuous_pkt_t *packet, wifi_promiscuou
         }
 
         accountAp(bssid, essid, channel, rssi, frameSubtype == 8, frameSubtype == 5);
+        AirtoolsNetwork *network = findOrCreateNetwork(bssid);
+        if (essid[0] && network && !network->managementQueued) {
+            network->managementQueued = enqueueCaptureFrame(
+                bssid,
+                payload,
+                static_cast<uint32_t>(length),
+                true,
+                false,
+                false
+            );
+        }
         return;
     }
 
@@ -476,23 +487,24 @@ void WifiAir::recordEapolIfPresent(const uint8_t *bssid, const uint8_t *frame, i
     bool hasMic = (keyInfo & 0x0100) != 0;
     bool hasAck = (keyInfo & 0x0080) != 0;
 
-    enqueueCaptureFrame(bssid, frame, static_cast<uint32_t>(length), hasMic, hasAck);
+    enqueueCaptureFrame(bssid, frame, static_cast<uint32_t>(length), false, hasMic, hasAck);
 }
 
-void WifiAir::enqueueCaptureFrame(const uint8_t *bssid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck)
+bool WifiAir::enqueueCaptureFrame(const uint8_t *bssid, const uint8_t *frame, uint32_t length, bool management, bool hasMic, bool hasAck)
 {
     if (!captureQueue || !frame || length == 0 || length > AIRTOOLS_MAX_CAPTURE_FRAME_BYTES) {
-        return;
+        return false;
     }
 
     memcpy(pendingCaptureFrame.bssid, bssid, 6);
     pendingCaptureFrame.length = length;
+    pendingCaptureFrame.management = management;
     pendingCaptureFrame.hasMic = hasMic;
     pendingCaptureFrame.hasAck = hasAck;
     memcpy(pendingCaptureFrame.data, frame, length);
 
-    // Non-blocking: drop the frame when the consumer cannot keep up.
-    xQueueSend(captureQueue, &pendingCaptureFrame, 0);
+    // Non-blocking: let the caller retry management metadata when the queue is full.
+    return xQueueSend(captureQueue, &pendingCaptureFrame, 0) == pdTRUE;
 }
 
 void WifiAir::drainCaptureQueue()
@@ -504,8 +516,13 @@ void WifiAir::drainCaptureQueue()
     while (xQueueReceive(captureQueue, &drainCaptureFrame, 0) == pdTRUE) {
         char essid[33];
         getEssid(drainCaptureFrame.bssid, essid, sizeof(essid));
-        storage->recordCaptureFrame(drainCaptureFrame.bssid, essid, drainCaptureFrame.data, drainCaptureFrame.length,
-                                    drainCaptureFrame.hasMic, drainCaptureFrame.hasAck);
+        if (drainCaptureFrame.management) {
+            storage->recordManagementFrame(drainCaptureFrame.bssid, essid, drainCaptureFrame.data, drainCaptureFrame.length);
+        }
+        else {
+            storage->recordCaptureFrame(drainCaptureFrame.bssid, essid, drainCaptureFrame.data, drainCaptureFrame.length,
+                                        drainCaptureFrame.hasMic, drainCaptureFrame.hasAck);
+        }
     }
 }
 

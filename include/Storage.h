@@ -36,7 +36,14 @@ public:
     void streamHandshakeDownload(const String &fileName, HexChunkWriter writer, void *context) const;
 
     /**
-     * Appends one captured 802.11 frame to the latest PCAP for the supplied BSSID.
+     * Stores the latest real beacon or probe-response frame carrying a non-empty
+     * ESSID for the supplied BSSID. A complete handshake is persisted only after
+     * this management frame is available.
+     */
+    void recordManagementFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length);
+
+    /**
+     * Stores one captured EAPOL-Key frame for the supplied BSSID.
      */
     void recordCaptureFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck);
 
@@ -54,12 +61,16 @@ private:
         char essid[33] = {};
         bool hasMic = false;
         bool hasAck = false;
+        bool hasManagementFrame = false;
+        uint16_t managementFrameLength = 0;
+        uint8_t managementFrame[AIRTOOLS_MANAGEMENT_CAPTURE_BYTES] = {};
         uint16_t hsFrameCount = 0;
         uint16_t hsFrameLength[AIRTOOLS_HANDSHAKE_MAX_FRAMES] = {};
         uint8_t hsFrames[AIRTOOLS_HANDSHAKE_MAX_FRAMES][AIRTOOLS_HANDSHAKE_CAPTURE_BYTES] = {};
     };
 
     HandshakeEntry *findOrCreateEntry(const uint8_t *bssid);
+    bool persistCompleteHandshake(HandshakeEntry &entry);
     bool writeHandshakePcap(HandshakeEntry &entry);
     String pathFor(const char *fileName) const;
     String macFileName(const uint8_t *bssid) const;
