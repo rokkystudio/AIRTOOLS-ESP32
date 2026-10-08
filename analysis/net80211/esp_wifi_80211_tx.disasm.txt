@@ -1,0 +1,312 @@
+﻿
+ieee80211_output.o:     file format elf32-littleriscv
+
+
+Disassembly of section .text.add_appie:
+
+Disassembly of section .text.ieee80211_vnd_ie_size.part.5:
+
+Disassembly of section .text.ieee80211_add_tie_param:
+
+Disassembly of section .text.esp_wifi_internal_tx_is_stop:
+
+Disassembly of section .text.ieee80211_reg_encap_amsdu_cb:
+
+Disassembly of section .text.ieee80211_reg_netstack_buf_cb:
+
+Disassembly of section .text.ieee80211_set_hmac_stop:
+
+Disassembly of section .text.wifi_is_started:
+
+Disassembly of section .wifiextrairam.5:
+
+Disassembly of section .text.ieee80211_recycle_cache_eb:
+
+Disassembly of section .text.ieee80211_empty_txq:
+
+Disassembly of section .wifiextrairam.4:
+
+Disassembly of section .text.is_wapi_alloc_tx_buf:
+
+Disassembly of section .text.ieee80211_wapi_alloc_tx_buf:
+
+Disassembly of section .text.get_wifi_internal_state:
+
+Disassembly of section .text.ieee80211_output_pending_eb:
+
+Disassembly of section .text.ieee80211_copy_eb_header:
+
+Disassembly of section .text.ieee80211_amsdu_adjust_head:
+
+Disassembly of section .text.ieee80211_amsdu_adjust_last_length:
+
+Disassembly of section .text.ieee80211_amsdu_length_check:
+
+Disassembly of section .text.ieee80211_output_init:
+
+Disassembly of section .text.ieee80211_send_setup:
+
+Disassembly of section .text.ieee80211_tx_mgt_cb:
+
+Disassembly of section .wifiextrairam.18:
+
+Disassembly of section .wifiextrairam.19:
+
+Disassembly of section .text.ieee80211_classify:
+
+Disassembly of section .text.ieee80211_add_rates:
+
+Disassembly of section .text.ieee80211_add_dsparams:
+
+Disassembly of section .text.ieee80211_add_xrates:
+
+Disassembly of section .text.ieee80211_add_probe_resp_app_ies:
+
+Disassembly of section .text.ieee80211_add_beacon_app_ies:
+
+Disassembly of section .text.ieee80211_add_assoc_resp_ies:
+
+Disassembly of section .text.ieee80211_add_assoc_req_ies:
+
+Disassembly of section .text.ieee80211_add_probe_req_ies:
+
+Disassembly of section .text.ieee80211_add_wme_param:
+
+Disassembly of section .text.ieee80211_add_dh_param:
+
+Disassembly of section .text.ieee80211_add_csa:
+
+Disassembly of section .text.ieee80211_add_rm_enable_cap:
+
+Disassembly of section .text.ieee80211_add_extcap:
+
+Disassembly of section .text.ieee80211_vnd_ie_size:
+
+Disassembly of section .text.ieee80211_vnd_ie_set:
+
+Disassembly of section .text.ieee80211_vnd_lora_ie_size:
+
+Disassembly of section .text.ieee80211_vnd_lora_ie_set:
+
+Disassembly of section .text.ieee80211_setup_robust_mgmtframe:
+
+Disassembly of section .text.ieee80211_mgmt_output:
+
+Disassembly of section .text.ieee80211_getcapinfo:
+
+Disassembly of section .text.ieee80211_assoc_req_construct:
+
+Disassembly of section .text.ieee80211_assoc_resp_construct:
+
+Disassembly of section .text.ieee80211_auth_construct:
+
+Disassembly of section .text.ieee80211_get_robustmgtframe:
+
+Disassembly of section .text.ieee80211_deauth_construct:
+
+Disassembly of section .text.ieee80211_disassoc_construct:
+
+Disassembly of section .wifi0iram.37:
+
+Disassembly of section .text.ieee80211_search_node:
+
+Disassembly of section .wifiextrairam.6:
+
+Disassembly of section .text.esp_wifi_internal_tx_by_ref:
+
+Disassembly of section .text.ieee80211_output:
+
+Disassembly of section .wifiextrairam.9:
+
+Disassembly of section .text.esp_wifi_mesh_tx:
+
+Disassembly of section .text.ieee80211_amsdu_send_check:
+
+Disassembly of section .text.ieee80211_amsdu_encap_check:
+
+Disassembly of section .text.ieee80211_encap_amsdu:
+
+Disassembly of section .text.ieee80211_alloc_proberesp:
+
+Disassembly of section .text.ieee80211_alloc_deauth:
+
+Disassembly of section .text.ieee80211_output_raw_process:
+
+Disassembly of section .text.ieee80211_raw_frame_sanity_check:
+
+Disassembly of section .text.esp_wifi_80211_tx:
+
+00000000 <esp_wifi_80211_tx>:
+   0:	7179                	add	sp,sp,-48
+   2:	d422                	sw	s0,40(sp)
+   4:	d226                	sw	s1,36(sp)
+   6:	ce4e                	sw	s3,28(sp)
+   8:	ca56                	sw	s5,20(sp)
+   a:	d606                	sw	ra,44(sp)
+   c:	d04a                	sw	s2,32(sp)
+   e:	cc52                	sw	s4,24(sp)
+  10:	c85a                	sw	s6,16(sp)
+  12:	c65e                	sw	s7,12(sp)
+  14:	842a                	mv	s0,a0
+  16:	84ae                	mv	s1,a1
+  18:	8ab2                	mv	s5,a2
+  1a:	89b6                	mv	s3,a3
+  1c:	00000097          	auipc	ra,0x0
+			1c: R_RISCV_CALL	ieee80211_raw_frame_sanity_check
+			1c: R_RISCV_RELAX	*ABS*
+  20:	000080e7          	jalr	ra # 1c <esp_wifi_80211_tx+0x1c>
+  24:	ed15                	bnez	a0,60 <.L1060>
+			24: R_RISCV_RVC_BRANCH	.L1060
+  26:	00000bb7          	lui	s7,0x0
+			26: R_RISCV_HI20	g_osi_funcs_p
+			26: R_RISCV_RELAX	*ABS*
+  2a:	000ba783          	lw	a5,0(s7) # 0 <esp_wifi_80211_tx>
+			2a: R_RISCV_LO12_I	g_osi_funcs_p
+			2a: R_RISCV_RELAX	*ABS*
+  2e:	00000b37          	lui	s6,0x0
+			2e: R_RISCV_HI20	g_wifi_global_lock
+			2e: R_RISCV_RELAX	*ABS*
+  32:	000b2503          	lw	a0,0(s6) # 0 <esp_wifi_80211_tx>
+			32: R_RISCV_LO12_I	g_wifi_global_lock
+			32: R_RISCV_RELAX	*ABS*
+  36:	4bfc                	lw	a5,84(a5)
+  38:	895e                	mv	s2,s7
+  3a:	9782                	jalr	a5
+  3c:	8526                	mv	a0,s1
+  3e:	8656                	mv	a2,s5
+  40:	4585                	li	a1,1
+  42:	00000097          	auipc	ra,0x0
+			42: R_RISCV_CALL	ic_ebuf_alloc
+			42: R_RISCV_RELAX	*ABS*
+  46:	000080e7          	jalr	ra # 42 <esp_wifi_80211_tx+0x42>
+  4a:	8a2a                	mv	s4,a0
+  4c:	84da                	mv	s1,s6
+  4e:	e505                	bnez	a0,76 <.L1062>
+			4e: R_RISCV_RVC_BRANCH	.L1062
+  50:	000ba783          	lw	a5,0(s7)
+			50: R_RISCV_LO12_I	g_osi_funcs_p
+			50: R_RISCV_RELAX	*ABS*
+  54:	000b2503          	lw	a0,0(s6)
+			54: R_RISCV_LO12_I	g_wifi_global_lock
+			54: R_RISCV_RELAX	*ABS*
+  58:	4fbc                	lw	a5,88(a5)
+  5a:	9782                	jalr	a5
+  5c:	10100513          	li	a0,257
+
+00000060 <.L1060>:
+  60:	50b2                	lw	ra,44(sp)
+  62:	5422                	lw	s0,40(sp)
+  64:	5492                	lw	s1,36(sp)
+  66:	5902                	lw	s2,32(sp)
+  68:	49f2                	lw	s3,28(sp)
+  6a:	4a62                	lw	s4,24(sp)
+  6c:	4ad2                	lw	s5,20(sp)
+  6e:	4b42                	lw	s6,16(sp)
+  70:	4bb2                	lw	s7,12(sp)
+  72:	6145                	add	sp,sp,48
+  74:	8082                	ret
+
+00000076 <.L1062>:
+  76:	1aa1                	add	s5,s5,-24
+  78:	01551b23          	sh	s5,22(a0)
+  7c:	03452a83          	lw	s5,52(a0)
+  80:	47e1                	li	a5,24
+  82:	00f51a23          	sh	a5,20(a0)
+  86:	000aa783          	lw	a5,0(s5)
+  8a:	6711                	lui	a4,0x4
+  8c:	8fd9                	or	a5,a5,a4
+  8e:	00faa023          	sw	a5,0(s5)
+  92:	00000097          	auipc	ra,0x0
+			92: R_RISCV_CALL	ic_get_default_sched
+			92: R_RISCV_RELAX	*ABS*
+  96:	000080e7          	jalr	ra # 92 <.L1062+0x1c>
+  9a:	00aaae23          	sw	a0,28(s5)
+  9e:	0ff47513          	zext.b	a0,s0
+  a2:	00000097          	auipc	ra,0x0
+			a2: R_RISCV_CALL	ic_get_80211_tx_rate
+			a2: R_RISCV_RELAX	*ABS*
+  a6:	000080e7          	jalr	ra # a2 <.L1062+0x2c>
+  aa:	034a2703          	lw	a4,52(s4)
+  ae:	000006b7          	lui	a3,0x0
+			ae: R_RISCV_HI20	g_wifi_nvs
+			ae: R_RISCV_RELAX	*ABS*
+  b2:	0006a683          	lw	a3,0(a3) # 0 <esp_wifi_80211_tx>
+			b2: R_RISCV_LO12_I	g_wifi_nvs
+			b2: R_RISCV_RELAX	*ABS*
+  b6:	00a70623          	sb	a0,12(a4) # 400c <.L1208+0x3958>
+  ba:	4b1c                	lw	a5,16(a4)
+  bc:	e829                	bnez	s0,10e <.L1063>
+			bc: R_RISCV_RVC_BRANCH	.L1063
+  be:	09d6c683          	lbu	a3,157(a3)
+
+000000c2 <.L1070>:
+  c2:	16f9                	add	a3,a3,-2
+  c4:	fffc0637          	lui	a2,0xfffc0
+  c8:	0016b693          	seqz	a3,a3
+  cc:	167d                	add	a2,a2,-1 # fffbffff <.L1208+0xfffbf94b>
+  ce:	06ca                	sll	a3,a3,0x12
+  d0:	8ff1                	and	a5,a5,a2
+  d2:	8fd5                	or	a5,a5,a3
+  d4:	cb1c                	sw	a5,16(a4)
+  d6:	00098663          	beqz	s3,e2 <.L1065>
+			d6: R_RISCV_BRANCH	.L1065
+  da:	431c                	lw	a5,0(a4)
+  dc:	0017e793          	or	a5,a5,1
+  e0:	c31c                	sw	a5,0(a4)
+
+000000e2 <.L1065>:
+  e2:	4b1c                	lw	a5,16(a4)
+  e4:	fff806b7          	lui	a3,0xfff80
+  e8:	16fd                	add	a3,a3,-1 # fff7ffff <.L1208+0xfff7f94b>
+  ea:	8805                	and	s0,s0,1
+  ec:	8ff5                	and	a5,a5,a3
+  ee:	044e                	sll	s0,s0,0x13
+  f0:	8c5d                	or	s0,s0,a5
+  f2:	cb00                	sw	s0,16(a4)
+  f4:	8552                	mv	a0,s4
+  f6:	00000097          	auipc	ra,0x0
+			f6: R_RISCV_CALL	ieee80211_post_hmac_tx
+			f6: R_RISCV_RELAX	*ABS*
+  fa:	000080e7          	jalr	ra # f6 <.L1065+0x14>
+  fe:	00092783          	lw	a5,0(s2)
+			fe: R_RISCV_LO12_I	g_osi_funcs_p
+			fe: R_RISCV_RELAX	*ABS*
+ 102:	0004a503          	lw	a0,0(s1)
+			102: R_RISCV_LO12_I	g_wifi_global_lock
+			102: R_RISCV_RELAX	*ABS*
+ 106:	4fbc                	lw	a5,88(a5)
+ 108:	9782                	jalr	a5
+ 10a:	4501                	li	a0,0
+ 10c:	bf91                	j	60 <.L1060>
+			10c: R_RISCV_RVC_JUMP	.L1060
+
+0000010e <.L1063>:
+ 10e:	3fb6c683          	lbu	a3,1019(a3)
+ 112:	bf45                	j	c2 <.L1070>
+			112: R_RISCV_RVC_JUMP	.L1070
+
+Disassembly of section .text.ieee80211_beacon_construct:
+
+Disassembly of section .text.ieee80211_get_nvs_he_dcm_max_constellation_tx:
+
+Disassembly of section .wifiextrairam.61:
+
+Disassembly of section .text.ieee80211_send_nulldata:
+
+Disassembly of section .wifi0iram.20:
+
+Disassembly of section .wifi0iram.10:
+
+Disassembly of section .text.ieee80211_send_probereq:
+
+Disassembly of section .text.ieee80211_send_mgmt:
+
+Disassembly of section .text.ieee80211_send_proberesp:
+
+Disassembly of section .text.ieee80211_send_deauth_no_bss:
+
+Disassembly of section .text.ieee80211_beacon_alloc:
+
+Disassembly of section .text.ieee80211_encap_null_data:
+
+Disassembly of section .text.ieee80211_pm_tx_null_process:

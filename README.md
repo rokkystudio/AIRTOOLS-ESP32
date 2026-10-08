@@ -1,20 +1,25 @@
+<p align="right">🌐 Language: <strong>Русский</strong> | <a href="README_EN.md">English</a></p>
+
 # AIRTOOLS-ESP32
 
-AIRTOOLS-ESP32 is a PlatformIO firmware project for ESP32-class boards. It keeps the AIRTOOLS command shape used by the Android client, while replacing MT7628/Linux control Wi-Fi with BLE and replacing Linux monitor tools with ESP-IDF Wi-Fi promiscuous capture.
+AIRTOOLS-ESP32 — проект прошивки PlatformIO для плат семейства ESP32. Он сохраняет формат команд AIRTOOLS, используемый Android-клиентом, заменяя управление Wi-Fi через MT7628/Linux на BLE, а Linux-инструменты monitor mode — на promiscuous-перехват Wi-Fi средствами ESP-IDF.
 
-## Board model
+## Поддерживаемые платы
 
-The firmware treats display, SD and battery telemetry as optional board capabilities. The scanner and BLE control path work without a screen.
+Дисплей, SD-карта и телеметрия аккумулятора рассматриваются как опциональные возможности конкретной платы. Сканер и BLE-интерфейс управления работают без экрана.
 
-| Environment | Board class | Purpose |
-|---|---|---|
-| lolin32 | ESP32 with battery hardware | Primary portable baseline |
-| esp32dev | Generic ESP32 | Cheap fallback and lab board |
-| nodemcu-32s | Generic ESP32 | Common development board |
-| esp32-s3-devkitc-1 | ESP32-S3 | S3 baseline without display assumptions |
-| esp32-s3-generic-lcd147 | ESP32-S3 display class | Optional ST7789/SD/PSRAM profile after pin validation |
+| Окружение               | Класс платы                    | Назначение                                             |
+|-------------------------|--------------------------------|--------------------------------------------------------|
+| lolin32                 | ESP32 с питанием от аккумулятора | Основной переносной профиль                           |
+| esp32dev                | Обычный ESP32                  | Недорогая резервная и лабораторная плата              |
+| nodemcu-32s             | Обычный ESP32                  | Распространённая отладочная плата                      |
+| esp32-s3-devkitc-1      | ESP32-S3                       | Базовый профиль S3 без предположений о дисплее         |
+| esp32-s3-generic-lcd147 | ESP32-S3 с дисплеем            | Профиль ST7789/SD/PSRAM после проверки распиновки      |
+| esp32-c6-touch-lcd147   | ESP32-C6 с сенсорным дисплеем  | Профиль 8 MB, JD9853, AXS5106L, SD и аккумулятор       |
 
-## Commands
+Профиль `esp32-c6-touch-lcd147` предназначен для платы ESP32-C6 с 1.47-дюймовым дисплеем JD9853 172×320, контроллером сенсора AXS5106L, MicroSD и измерением напряжения аккумулятора.
+
+## Команды
 
 - /status
 - /start
@@ -28,23 +33,47 @@ The firmware treats display, SD and battery telemetry as optional board capabili
 - /aireplay?mode=test&count=<n>
 - /replay?station=<client-mac>&count=<1..128>
 
-`/start` starts promiscuous capture in discovery mode or resumes capture on the selected target. `/replay` requires both a selected target and active promiscuous capture; `count` defaults to `5` and explicit values must be decimal `1..128`. While a target is selected, the capture loop stays on the target channel and does not run discovery channel hopping. Query parameters accept URL-encoded values from the Android client. `/aireplay?mode=test` reports the firmware aireplay command path and raw TX capability. `/replay?station=<client-mac>` transmits deauthentication frames spoofing the selected BSSID (broadcast when `station` is omitted) so the target station re-associates and a fresh handshake can be captured.
+`/start` запускает promiscuous-перехват в режиме обнаружения или продолжает захват для выбранной цели. `/replay` требует выбранную цель и активный promiscuous-перехват; значение `count` по умолчанию равно `5`, а явное значение должно быть десятичным числом в диапазоне `1..128`.
 
-## Handshake PCAP
+Когда цель выбрана, цикл захвата остаётся на её канале и не выполняет перебор каналов обнаружения. Параметры запросов поддерживают URL-кодирование Android-клиента. `/aireplay?mode=test` сообщает состояние пути команды aireplay и возможность передачи raw-кадров. `/replay?station=<client-mac>` передаёт deauthentication-кадры от имени выбранного BSSID; если `station` не указан, используется broadcast-адрес.
 
-A saved handshake PCAP contains one real beacon or probe-response frame with a non-empty ESSID followed by the captured EAPOL-Key frames. Storage does not publish a completed handshake until both the management metadata and the EAPOL completion criteria are present. Management frames are queued once per discovered BSSID so normal beacon traffic cannot crowd EAPOL frames out of the bounded capture queue.
+## PCAP с handshake
 
-## Build
+Сохранённый handshake PCAP содержит реальный beacon или probe-response кадр с непустым ESSID, после которого записываются захваченные EAPOL-Key кадры. Хранилище не публикует завершённый handshake, пока одновременно не выполнены требования к management-метаданным и критериям завершения EAPOL.
+
+Management-кадр ставится в очередь один раз для каждого обнаруженного BSSID, поэтому обычный поток beacon-кадров не вытесняет EAPOL-кадры из ограниченной очереди захвата.
+
+## Сборка
 
 ```powershell
 pio run -e lolin32
 pio run -e esp32-s3-devkitc-1
+pio run -e esp32-c6-touch-lcd147
 ```
 
-Open this folder in CLion with PlatformIO support and select the required environment.
+Для ESP32-C6 используется отдельный профиль на pioarduino с Arduino Core 3.1.0 и NimBLE-Arduino 2.3.8. Остальные платы закреплены на PlatformIO `espressif32@6.12.0`.
 
-## Limits
+Откройте каталог проекта в CLion с поддержкой PlatformIO и выберите нужное окружение.
 
-ESP32 promiscuous mode is useful for a portable scanner and lightweight capture tool, but it is not equivalent to MT7628 + RTL8188EUS monitor mode. AIRTOOLS-ESP32 keeps the UI/API model while using a separate ESP32 backend.
+## ESP32-C6 Touch LCD 1.47
 
-Raw frame transmission uses `esp_wifi_80211_tx`. The ESP-IDF driver documents support for beacon, probe, action and non-QoS data frames, so deauth delivery should be validated against the target board and SDK revision.
+Для профиля `esp32-c6-touch-lcd147` используется следующая конфигурация:
+
+- ESP32-C6, Flash 8 MB
+- LCD JD9853, 172×320
+- LCD SPI: SCK GPIO1, MOSI GPIO2, CS GPIO14, DC GPIO15, RST GPIO22, BL GPIO23
+- Touch AXS5106L: SDA GPIO18, SCL GPIO19, RST GPIO20, INT GPIO21
+- MicroSD SPI: SCK GPIO1, MOSI GPIO2, MISO GPIO3, CS GPIO4
+- Battery ADC: GPIO0
+- Делитель аккумулятора: 200K/100K, коэффициент пересчёта напряжения ×3
+- Таблица разделов: `default_8MB.csv`
+
+LCD и MicroSD используют общие линии GPIO1 и GPIO2. SD-карта уже инициализируется прошивкой с указанными SPI-пинами. Battery ADC также работает с коэффициентом делителя платы.
+
+Для JD9853 включён минимальный локальный статус-экран: имя AIRTOOLS, тип платы и состояние BLE (`STARTING`, `ADVERTISING`, `CONNECTED`). Подсветка работает примерно на 50%. AXS5106L пока не используется для управления интерфейсом; профиль хранит его подтверждённую распиновку для дальнейшего добавления touch-управления.
+
+## Ограничения
+
+Promiscuous mode ESP32 подходит для переносного сканера и лёгкого инструмента захвата, но не является полным эквивалентом monitor mode связки MT7628 + RTL8188EUS. AIRTOOLS-ESP32 сохраняет модель UI/API, используя отдельный backend для ESP32.
+
+Передача raw-кадров выполняется через `esp_wifi_80211_tx`. ESP-IDF документирует передачу beacon, probe, action и non-QoS data кадров, поэтому фактическое поведение передачи кадров следует проверять на конкретной плате и версии SDK.

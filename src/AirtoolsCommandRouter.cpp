@@ -89,6 +89,8 @@ String AirtoolsCommandRouter::handleStatus() const
     response += " ";
     response += storage.formatStatus();
     response += " ";
+    response += storage.formatCaptureStatus();
+    response += " ";
     response += board.formatStatus();
     response += "\n";
     return response;
@@ -165,6 +167,10 @@ String AirtoolsCommandRouter::handleAireplay(const String &command) const
 
 String AirtoolsCommandRouter::handleReplay(const String &command)
 {
+#if AIRTOOLS_BOARD_ID == 6
+    (void)command;
+    return "ERR unsupported feature=replay reason=esp32_c6_raw_deauth_not_supported\n";
+#else
     String stationText = valueOf(command, "station");
     uint8_t station[6];
     bool hasStation = false;
@@ -203,6 +209,7 @@ String AirtoolsCommandRouter::handleReplay(const String &command)
     response += sent;
     response += " raw_tx=supported\n";
     return response;
+#endif
 }
 
 bool AirtoolsCommandRouter::parseReplayCount(const String &command, int &count) const

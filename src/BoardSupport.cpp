@@ -13,6 +13,8 @@ static const char *boardName()
     return "ESP32-S3 DevKitC-1";
 #elif AIRTOOLS_BOARD_ID == 5
     return "ESP32-S3 LCD 1.47 Generic";
+#elif AIRTOOLS_BOARD_ID == 6
+    return "ESP32-C6 Touch LCD 1.47";
 #else
     return "ESP32";
 #endif
@@ -58,15 +60,21 @@ String BoardSupport::formatStatus() const
     return response;
 }
 
+/**
+ * Reads the battery voltage through the configured ADC divider.
+ *
+ * @return Battery voltage in millivolts, or -1 when battery ADC support is disabled or invalid.
+ */
 int BoardSupport::readBatteryMillivolts() const
 {
 #if AIRTOOLS_HAS_BATTERY_ADC
-    if (AIRTOOLS_BATTERY_ADC_PIN < 0) {
+    if (AIRTOOLS_BATTERY_ADC_PIN < 0 || AIRTOOLS_BATTERY_DIVIDER_DEN <= 0) {
         return -1;
     }
 
     int raw = analogRead(AIRTOOLS_BATTERY_ADC_PIN);
-    return static_cast<int>((raw / 4095.0f) * 3300.0f * 2.0f);
+    float adcMillivolts = (raw / 4095.0f) * 3300.0f;
+    return static_cast<int>(adcMillivolts * AIRTOOLS_BATTERY_DIVIDER_NUM / AIRTOOLS_BATTERY_DIVIDER_DEN);
 #else
     return -1;
 #endif

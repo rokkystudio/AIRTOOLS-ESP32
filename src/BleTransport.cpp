@@ -35,22 +35,48 @@ void BleTransport::begin(AirtoolsCommandRouter *router)
     service->start();
 
     NimBLEAdvertising *advertisingHandle = NimBLEDevice::getAdvertising();
-    advertisingHandle->addServiceUUID(AIRTOOLS_SERVICE_UUID);
+#if AIRTOOLS_NIMBLE_V2
+    advertisingHandle->enableScanResponse(true);
+#else
     advertisingHandle->setScanResponse(true);
-    advertisingHandle->start();
-    advertising = true;
+#endif
+    advertisingHandle->addServiceUUID(AIRTOOLS_SERVICE_UUID);
+    advertisingHandle->setName(AIRTOOLS_BLE_DEVICE_NAME);
+    advertising = advertisingHandle->start();
 
-    Serial.println("BLE_READY name=" AIRTOOLS_BLE_DEVICE_NAME);
+    Serial.print("BLE_READY name=" AIRTOOLS_BLE_DEVICE_NAME " advertising=");
+    Serial.println(advertising ? "yes" : "no");
 }
 
 void BleTransport::loop()
 {
+    NimBLEAdvertising *advertisingHandle = NimBLEDevice::getAdvertising();
+    advertising = advertisingHandle->isAdvertising();
+
     if (!connected && !advertising) {
-        NimBLEDevice::getAdvertising()->start();
-        advertising = true;
+        advertising = advertisingHandle->start();
+        if (!advertising) {
+            Serial.println("BLE_ADVERTISING_START_FAILED");
+        }
     }
 
     handlePendingCommands();
+}
+
+/**
+ * Returns true while a BLE client is connected to the command service.
+ */
+bool BleTransport::isConnected() const
+{
+    return connected;
+}
+
+/**
+ * Returns true while the BLE command service is advertising.
+ */
+bool BleTransport::isAdvertising() const
+{
+    return advertising;
 }
 
 void BleTransport::sendResponse(const String &response)
@@ -119,24 +145,54 @@ void BleTransport::notifyBytes(const uint8_t *data, size_t length)
     delay(8);
 }
 
+/**
+ * Updates transport state when a BLE client connects.
+ */
+#if AIRTOOLS_NIMBLE_V2
+void BleTransport::onConnect(NimBLEServer *server, NimBLEConnInfo &connInfo)
+{
+    (void)server;
+    (void)connInfo;
+#else
 void BleTransport::onConnect(NimBLEServer *server)
 {
     (void)server;
+#endif
     connected = true;
     advertising = false;
     Serial.println("BLE_CONNECTED");
 }
 
+/**
+ * Marks the transport for advertising restart after a BLE client disconnects.
+ */
+#if AIRTOOLS_NIMBLE_V2
+void BleTransport::onDisconnect(NimBLEServer *server, NimBLEConnInfo &connInfo, int reason)
+{
+    (void)server;
+    (void)connInfo;
+    (void)reason;
+#else
 void BleTransport::onDisconnect(NimBLEServer *server)
 {
     (void)server;
+#endif
     connected = false;
     advertising = false;
     Serial.println("BLE_DISCONNECTED");
 }
 
+/**
+ * Queues a command written to the BLE RX characteristic.
+ */
+#if AIRTOOLS_NIMBLE_V2
+void BleTransport::onWrite(NimBLECharacteristic *characteristic, NimBLEConnInfo &connInfo)
+{
+    (void)connInfo;
+#else
 void BleTransport::onWrite(NimBLECharacteristic *characteristic)
 {
+#endif
     if (!commandQueue) {
         return;
     }

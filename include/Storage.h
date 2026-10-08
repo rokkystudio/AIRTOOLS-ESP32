@@ -9,41 +9,43 @@
 typedef void (*HexChunkWriter)(const char *data, size_t length, void *context);
 
 /**
- * Stores passive capture artifacts and reports the runtime handshake index.
+ * Keeps passive capture artifacts in RAM and optionally mirrors complete PCAP files to SD.
  */
 class Storage
 {
 public:
     /**
-     * Mounts SD when enabled, otherwise mounts LittleFS for boards without removable storage.
+     * Initializes the RAM-backed capture index and attempts to mount optional persistent storage.
      */
     void begin();
 
     /**
-     * Returns a short status string for /status diagnostics.
+     * Returns RAM storage state and optional persistent backend diagnostics.
      */
     String formatStatus() const;
 
     /**
-     * Returns the current handshake index in AIRTOOLS CSV format.
+     * Returns complete handshakes currently available in RAM.
      */
     String formatHandshakes() const;
 
     /**
-     * Streams one stored PCAP file as bounded hex text chunks through the supplied
-     * writer instead of building one large in-memory String.
+     * Returns passive capture progress counters for diagnostics.
+     */
+    String formatCaptureStatus() const;
+
+    /**
+     * Builds one PCAP directly from the RAM capture entry and streams it as bounded hex chunks.
      */
     void streamHandshakeDownload(const String &fileName, HexChunkWriter writer, void *context) const;
 
     /**
-     * Stores the latest real beacon or probe-response frame carrying a non-empty
-     * ESSID for the supplied BSSID. A complete handshake is persisted only after
-     * this management frame is available.
+     * Stores the latest beacon or probe-response frame carrying a non-empty ESSID in RAM.
      */
     void recordManagementFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length);
 
     /**
-     * Stores one captured EAPOL-Key frame for the supplied BSSID.
+     * Stores one captured EAPOL-Key frame in RAM.
      */
     void recordCaptureFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck);
 
@@ -71,7 +73,7 @@ private:
 
     HandshakeEntry *findOrCreateEntry(const uint8_t *bssid);
     bool persistCompleteHandshake(HandshakeEntry &entry);
-    bool writeHandshakePcap(HandshakeEntry &entry);
+    bool writeHandshakePcap(const HandshakeEntry &entry);
     String pathFor(const char *fileName) const;
     String macFileName(const uint8_t *bssid) const;
     bool isKnownHandshakeFile(const String &fileName) const;
@@ -80,6 +82,6 @@ private:
 
     HandshakeEntry entries[AIRTOOLS_MAX_HANDSHAKES];
     bool mounted = false;
-    const char *backend = "none";
+    const char *backend = "ram";
     mutable SemaphoreHandle_t entriesMutex = nullptr;
 };

@@ -50,7 +50,7 @@ public:
     String formatNetworks() const;
 
     /**
-     * Returns a text index compatible with AIRTOOLS /clients responses.
+     * Returns recently observed client stations for the active capture target.
      */
     String formatClients() const;
 
@@ -65,8 +65,22 @@ public:
     bool isScanning() const;
 
     /**
-     * Copies the active capture target BSSID and channel into the supplied
-     * buffers. Returns false when no target is selected.
+     * Returns the currently selected Wi-Fi channel.
+     */
+    int getCurrentChannel() const;
+
+    /**
+     * Writes ALL when scanning all networks, otherwise the selected ESSID or BSSID.
+     */
+    void getDisplayTargetLabel(char *out, size_t outLength) const;
+
+    /**
+     * Returns true briefly after a replay command so local UI can show the event.
+     */
+    bool isReplayActive() const;
+
+    /**
+     * Copies the active capture target BSSID and channel into the supplied buffers.
      */
     bool getTarget(uint8_t *bssid, int *channel) const;
 
@@ -89,6 +103,8 @@ private:
     };
 
     static constexpr int CAPTURE_QUEUE_DEPTH = 8;
+    static constexpr uint32_t CLIENT_ACTIVE_TTL_MS = 30000;
+    static constexpr uint32_t REPLAY_INDICATOR_MS = 1500;
 
     static void promiscuousThunk(void *buffer, wifi_promiscuous_pkt_type_t type);
     void handlePacket(const wifi_promiscuous_pkt_t *packet, wifi_promiscuous_pkt_type_t type);
@@ -112,6 +128,7 @@ private:
     bool scanning = false;
     int currentChannel = 1;
     uint32_t lastHopMs = 0;
+    uint32_t lastReplayMs = 0;
 
     mutable SemaphoreHandle_t stateMutex = nullptr;
     QueueHandle_t captureQueue = nullptr;

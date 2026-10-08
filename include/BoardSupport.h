@@ -23,6 +23,8 @@ public:
      */
     String formatStatus() const;
 
-private:
+    /**
+     * Returns the current battery voltage in millivolts, or -1 when unavailable.
+     */
     int readBatteryMillivolts() const;
 };

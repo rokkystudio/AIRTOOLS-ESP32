@@ -64,7 +64,7 @@ void WifiAir::begin(Storage *storage)
     }
 
     WiFi.mode(WIFI_STA);
-    WiFi.disconnect(true, true);
+    WiFi.disconnect(false, true);
     delay(100);
     esp_wifi_set_promiscuous(false);
     esp_wifi_set_promiscuous_rx_cb(&WifiAir::promiscuousThunk);
@@ -217,10 +217,11 @@ String WifiAir::formatClients() const
 
     String response = "OK clients\n";
     response += "# bssid,station,signal_dbm,frames,last_seen\n";
+    uint32_t now = millis();
 
     for (int index = 0; index < AIRTOOLS_MAX_CLIENTS; ++index) {
         const AirtoolsClient &client = snapshot[index];
-        if (!client.used) {
+        if (!client.used || now - client.lastSeenMs > CLIENT_ACTIVE_TTL_MS) {
             continue;
         }
 
@@ -273,6 +274,53 @@ bool WifiAir::isScanning() const
     return lock.acquired() && scanning;
 }
 
+/**
+ * Returns the currently selected Wi-Fi channel.
+ */
+int WifiAir::getCurrentChannel() const
+{
+    StateLockGuard lock(stateMutex, true);
+    return lock.acquired() ? currentChannel : 0;
+}
+
+void WifiAir::getDisplayTargetLabel(char *out, size_t outLength) const
+{
+    if (!out || outLength == 0) {
+        return;
+    }
+
+    out[0] = 0;
+    StateLockGuard lock(stateMutex, true);
+    if (!lock.acquired()) {
+        strncpy(out, "?", outLength - 1);
+        out[outLength - 1] = 0;
+        return;
+    }
+
+    if (!target.active) {
+        strncpy(out, "ALL", outLength - 1);
+        out[outLength - 1] = 0;
+        return;
+    }
+
+    const char *essid = essidForLocked(target.bssid);
+    if (essid && essid[0]) {
+        strncpy(out, essid, outLength - 1);
+        out[outLength - 1] = 0;
+        return;
+    }
+
+    String bssid = macToString(target.bssid);
+    strncpy(out, bssid.c_str(), outLength - 1);
+    out[outLength - 1] = 0;
+}
+
+bool WifiAir::isReplayActive() const
+{
+    StateLockGuard lock(stateMutex, true);
+    return lock.acquired() && lastReplayMs != 0 && millis() - lastReplayMs < REPLAY_INDICATOR_MS;
+}
+
 bool WifiAir::getTarget(uint8_t *bssid, int *channel) const
 {
     StateLockGuard lock(stateMutex, true);
@@ -293,6 +341,13 @@ int WifiAir::sendDeauth(const uint8_t *bssid, int channel, const uint8_t *statio
 {
     if (!bssid || isZeroMac(bssid)) {
         return 0;
+    }
+
+    {
+        StateLockGuard lock(stateMutex, true);
+        if (lock.acquired()) {
+            lastReplayMs = millis();
+        }
     }
     if (count < 1) {
         count = 1;
@@ -444,7 +499,11 @@ void WifiAir::handlePacket(const wifi_promiscuous_pkt_t *packet, wifi_promiscuou
             return;
         }
 
-        if (!bssid || !station || isBroadcast(station) || isZeroMac(station) || !targetAccepts(bssid, channel)) {
+        if (!bssid || !station ||
+            (station[0] & 0x01) != 0 ||
+            isBroadcast(station) ||
+            isZeroMac(station) ||
+            !targetAccepts(bssid, channel)) {
             return;
         }
 
@@ -617,13 +676,14 @@ AirtoolsNetwork *WifiAir::findOrCreateNetwork(const uint8_t *bssid)
 AirtoolsClient *WifiAir::findOrCreateClient(const uint8_t *bssid, const uint8_t *station)
 {
     AirtoolsClient *freeSlot = nullptr;
+    uint32_t now = millis();
 
     for (auto &client : clients) {
         if (client.used && macEquals(client.bssid, bssid) && macEquals(client.station, station)) {
             return &client;
         }
 
-        if (!client.used && !freeSlot) {
+        if ((!client.used || now - client.lastSeenMs > CLIENT_ACTIVE_TTL_MS) && !freeSlot) {
             freeSlot = &client;
         }
     }
@@ -632,6 +692,7 @@ AirtoolsClient *WifiAir::findOrCreateClient(const uint8_t *bssid, const uint8_t 
         return nullptr;
     }
 
+    *freeSlot = AirtoolsClient{};
     freeSlot->used = true;
     memcpy(freeSlot->bssid, bssid, 6);
     memcpy(freeSlot->station, station, 6);

@@ -3,6 +3,7 @@
 
 #if AIRTOOLS_HAS_SD
 #include <SD.h>
+#include <SPI.h>
 #else
 #include <LittleFS.h>
 #endif
@@ -33,9 +34,6 @@ struct PcapPacketHeader
 
 namespace
 {
-/**
- * RAII guard for the handshake index mutex.
- */
 class EntriesLockGuard
 {
 public:
@@ -69,22 +67,62 @@ void writeLiteral(HexChunkWriter writer, void *context, const char *literal)
         writer(literal, strlen(literal), context);
     }
 }
+
+void writeHexBytes(HexChunkWriter writer, void *context, const uint8_t *data, size_t length)
+{
+    if (!writer || !data || length == 0) {
+        return;
+    }
+
+    static const char hex[] = "0123456789abcdef";
+    char chunk[256];
+    size_t offset = 0;
+
+    while (offset < length) {
+        size_t count = length - offset;
+        if (count > sizeof(chunk) / 2) {
+            count = sizeof(chunk) / 2;
+        }
+
+        size_t out = 0;
+        for (size_t index = 0; index < count; ++index) {
+            uint8_t value = data[offset + index];
+            chunk[out++] = hex[value >> 4];
+            chunk[out++] = hex[value & 0x0f];
+        }
+
+        writer(chunk, out, context);
+        offset += count;
+    }
+}
 } // namespace
 
+/**
+ * Initializes the RAM-backed capture index and attempts optional persistent storage.
+ */
 void Storage::begin()
 {
-#if AIRTOOLS_HAS_SD
-    mounted = SD.begin();
-    backend = mounted ? "sd" : "sd-failed";
-#else
-    mounted = LittleFS.begin(true);
-    backend = mounted ? "littlefs" : "littlefs-failed";
-#endif
-
     entriesMutex = xSemaphoreCreateMutex();
     if (!entriesMutex) {
         Serial.println("STORAGE_ENTRIES_MUTEX_FAILED");
     }
+
+#if AIRTOOLS_HAS_SD
+    if (AIRTOOLS_SD_SCK_PIN >= 0 &&
+        AIRTOOLS_SD_MOSI_PIN >= 0 &&
+        AIRTOOLS_SD_MISO_PIN >= 0 &&
+        AIRTOOLS_SD_CS_PIN >= 0) {
+        SPI.begin(AIRTOOLS_SD_SCK_PIN, AIRTOOLS_SD_MISO_PIN, AIRTOOLS_SD_MOSI_PIN, AIRTOOLS_SD_CS_PIN);
+        mounted = SD.begin(AIRTOOLS_SD_CS_PIN, SPI);
+    }
+    else {
+        mounted = SD.begin();
+    }
+    backend = mounted ? "ram+sd" : "ram";
+#else
+    mounted = LittleFS.begin(true);
+    backend = mounted ? "ram+littlefs" : "ram";
+#endif
 }
 
 String Storage::formatStatus() const
@@ -131,13 +169,63 @@ String Storage::formatHandshakes() const
     return response;
 }
 
+String Storage::formatCaptureStatus() const
+{
+    EntriesLockGuard lock(entriesMutex);
+    if (!lock.acquired()) {
+        return "capture_lock=0";
+    }
+
+    uint32_t eapolFrames = 0;
+    uint32_t entriesUsed = 0;
+    uint32_t complete = 0;
+    uint32_t withMic = 0;
+    uint32_t withAck = 0;
+    uint32_t withManagement = 0;
+
+    for (const auto &entry : entries) {
+        if (!entry.used) {
+            continue;
+        }
+
+        ++entriesUsed;
+        eapolFrames += entry.hsFrameCount;
+        if (entry.saved) {
+            ++complete;
+        }
+        if (entry.hasMic) {
+            ++withMic;
+        }
+        if (entry.hasAck) {
+            ++withAck;
+        }
+        if (entry.hasManagementFrame) {
+            ++withManagement;
+        }
+    }
+
+    String response;
+    response += "capture_entries=";
+    response += entriesUsed;
+    response += " eapol=";
+    response += eapolFrames;
+    response += " mic=";
+    response += withMic;
+    response += " ack=";
+    response += withAck;
+    response += " mgmt=";
+    response += withManagement;
+    response += " complete=";
+    response += complete;
+    return response;
+}
+
+/**
+ * Streams a complete PCAP directly from the RAM-backed handshake entry.
+ */
 void Storage::streamHandshakeDownload(const String &fileName, HexChunkWriter writer, void *context) const
 {
     if (!writer) {
-        return;
-    }
-    if (!mounted) {
-        writeLiteral(writer, context, "ERR storage_not_mounted\n");
         return;
     }
 
@@ -147,25 +235,31 @@ void Storage::streamHandshakeDownload(const String &fileName, HexChunkWriter wri
         return;
     }
 
-    if (!isSafeHandshakeFileName(fileName) || !isKnownHandshakeFile(fileName)) {
+    if (!isSafeHandshakeFileName(fileName)) {
         writeLiteral(writer, context, "ERR invalid_handshake_file\n");
         return;
     }
 
-    String path = pathFor(fileName.c_str());
-#if AIRTOOLS_HAS_SD
-    File file = SD.open(path, FILE_READ);
-#else
-    File file = LittleFS.open(path, "r");
-#endif
-    if (!file) {
+    const HandshakeEntry *entry = nullptr;
+    for (const auto &candidate : entries) {
+        if (candidate.used && candidate.saved && fileName == candidate.fileName) {
+            entry = &candidate;
+            break;
+        }
+    }
+
+    if (!entry) {
         writeLiteral(writer, context, "ERR handshake_file_missing\n");
         return;
     }
 
-    size_t size = file.size();
+    size_t size = sizeof(PcapGlobalHeader);
+    size += sizeof(PcapPacketHeader) + entry->managementFrameLength;
+    for (uint16_t index = 0; index < entry->hsFrameCount; ++index) {
+        size += sizeof(PcapPacketHeader) + entry->hsFrameLength[index];
+    }
+
     if (size == 0 || size > AIRTOOLS_MAX_HEX_DOWNLOAD_BYTES) {
-        file.close();
         writeLiteral(writer, context, "ERR handshake_size_unsupported\n");
         return;
     }
@@ -179,25 +273,42 @@ void Storage::streamHandshakeDownload(const String &fileName, HexChunkWriter wri
     header += "\n";
     writer(header.c_str(), header.length(), context);
 
-    const char hex[] = "0123456789abcdef";
-    uint8_t buffer[128];
-    char chunk[256];
-    while (file.available()) {
-        size_t count = file.read(buffer, sizeof(buffer));
-        size_t pos = 0;
-        for (size_t i = 0; i < count; ++i) {
-            chunk[pos++] = hex[buffer[i] >> 4];
-            chunk[pos++] = hex[buffer[i] & 0x0f];
-        }
-        writer(chunk, pos, context);
+    PcapGlobalHeader globalHeader;
+    globalHeader.magic = PCAP_MAGIC;
+    globalHeader.major = PCAP_VERSION_MAJOR;
+    globalHeader.minor = PCAP_VERSION_MINOR;
+    globalHeader.zone = 0;
+    globalHeader.sigfigs = 0;
+    globalHeader.snaplen = 2048;
+    globalHeader.network = PCAP_LINKTYPE_IEEE802_11;
+    writeHexBytes(writer, context, reinterpret_cast<const uint8_t *>(&globalHeader), sizeof(globalHeader));
+
+    uint32_t now = entry->storedTick;
+
+    PcapPacketHeader managementHeader;
+    managementHeader.seconds = now / 1000;
+    managementHeader.microseconds = (now % 1000) * 1000;
+    managementHeader.capturedLength = entry->managementFrameLength;
+    managementHeader.originalLength = entry->managementFrameLength;
+    writeHexBytes(writer, context, reinterpret_cast<const uint8_t *>(&managementHeader), sizeof(managementHeader));
+    writeHexBytes(writer, context, entry->managementFrame, entry->managementFrameLength);
+
+    for (uint16_t index = 0; index < entry->hsFrameCount; ++index) {
+        PcapPacketHeader packetHeader;
+        packetHeader.seconds = now / 1000;
+        packetHeader.microseconds = (now % 1000) * 1000;
+        packetHeader.capturedLength = entry->hsFrameLength[index];
+        packetHeader.originalLength = entry->hsFrameLength[index];
+        writeHexBytes(writer, context, reinterpret_cast<const uint8_t *>(&packetHeader), sizeof(packetHeader));
+        writeHexBytes(writer, context, entry->hsFrames[index], entry->hsFrameLength[index]);
     }
+
     writer("\n", 1, context);
-    file.close();
 }
 
 void Storage::recordManagementFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length)
 {
-    if (!mounted || !bssid || !essid || !essid[0] || !frame || length == 0) {
+    if (!bssid || !essid || !essid[0] || !frame || length == 0) {
         return;
     }
 
@@ -225,9 +336,16 @@ void Storage::recordManagementFrame(const uint8_t *bssid, const char *essid, con
     }
 }
 
-void Storage::recordCaptureFrame(const uint8_t *bssid, const char *essid, const uint8_t *frame, uint32_t length, bool hasMic, bool hasAck)
+void Storage::recordCaptureFrame(
+    const uint8_t *bssid,
+    const char *essid,
+    const uint8_t *frame,
+    uint32_t length,
+    bool hasMic,
+    bool hasAck
+)
 {
-    if (!mounted || !bssid || !frame || length == 0) {
+    if (!bssid || !frame || length == 0) {
         return;
     }
 
@@ -252,12 +370,13 @@ void Storage::recordCaptureFrame(const uint8_t *bssid, const char *essid, const 
         slot = entry->hsFrameCount++;
     }
     else {
-        for (uint16_t i = 1; i < AIRTOOLS_HANDSHAKE_MAX_FRAMES; ++i) {
-            memcpy(entry->hsFrames[i - 1], entry->hsFrames[i], AIRTOOLS_HANDSHAKE_CAPTURE_BYTES);
-            entry->hsFrameLength[i - 1] = entry->hsFrameLength[i];
+        for (uint16_t index = 1; index < AIRTOOLS_HANDSHAKE_MAX_FRAMES; ++index) {
+            memcpy(entry->hsFrames[index - 1], entry->hsFrames[index], AIRTOOLS_HANDSHAKE_CAPTURE_BYTES);
+            entry->hsFrameLength[index - 1] = entry->hsFrameLength[index];
         }
         slot = AIRTOOLS_HANDSHAKE_MAX_FRAMES - 1;
     }
+
     memcpy(entry->hsFrames[slot], frame, captureLength);
     entry->hsFrameLength[slot] = captureLength;
 
@@ -289,43 +408,51 @@ Storage::HandshakeEntry *Storage::findOrCreateEntry(const uint8_t *bssid)
         return nullptr;
     }
 
+    *freeSlot = HandshakeEntry{};
     freeSlot->used = true;
-    freeSlot->saved = false;
     memcpy(freeSlot->bssid, bssid, 6);
     freeSlot->storedTick = millis();
-    freeSlot->generation = 0;
-    freeSlot->frameCount = 0;
-    freeSlot->hasMic = false;
-    freeSlot->hasAck = false;
-    freeSlot->hasManagementFrame = false;
-    freeSlot->managementFrameLength = 0;
-    freeSlot->hsFrameCount = 0;
+
     String fileName = macFileName(bssid);
     strncpy(freeSlot->fileName, fileName.c_str(), sizeof(freeSlot->fileName) - 1);
     freeSlot->fileName[sizeof(freeSlot->fileName) - 1] = 0;
-    freeSlot->essid[0] = 0;
     return freeSlot;
 }
 
+/**
+ * Marks a complete handshake available in RAM and mirrors it to persistent storage when mounted.
+ */
 bool Storage::persistCompleteHandshake(HandshakeEntry &entry)
 {
     if (entry.hsFrameCount < 2 || !entry.hasMic || !entry.hasAck ||
         !entry.hasManagementFrame || !entry.essid[0]) {
         return false;
     }
-    if (!writeHandshakePcap(entry)) {
-        return false;
-    }
 
+    bool firstCompletion = !entry.saved;
     entry.saved = true;
     entry.frameCount = entry.hsFrameCount + 1;
     entry.storedTick = millis();
-    entry.generation = entry.generation == 0 ? 1 : entry.generation + 1;
+    if (firstCompletion) {
+        entry.generation = 1;
+    }
+
+    if (mounted) {
+        writeHandshakePcap(entry);
+    }
+
     return true;
 }
 
-bool Storage::writeHandshakePcap(HandshakeEntry &entry)
+/**
+ * Mirrors a complete RAM entry to the optional persistent backend.
+ */
+bool Storage::writeHandshakePcap(const HandshakeEntry &entry)
 {
+    if (!mounted) {
+        return false;
+    }
+
     String path = pathFor(entry.fileName);
 #if AIRTOOLS_HAS_SD
     if (SD.exists(path.c_str())) {
@@ -347,19 +474,22 @@ bool Storage::writeHandshakePcap(HandshakeEntry &entry)
     globalHeader.sigfigs = 0;
     globalHeader.snaplen = 2048;
     globalHeader.network = PCAP_LINKTYPE_IEEE802_11;
+
     if (file.write(reinterpret_cast<const uint8_t *>(&globalHeader), sizeof(globalHeader)) != sizeof(globalHeader)) {
         file.close();
         return false;
     }
 
-    uint32_t now = millis();
+    uint32_t now = entry.storedTick;
 
     PcapPacketHeader managementHeader;
     managementHeader.seconds = now / 1000;
     managementHeader.microseconds = (now % 1000) * 1000;
     managementHeader.capturedLength = entry.managementFrameLength;
     managementHeader.originalLength = entry.managementFrameLength;
-    bool managementOk = file.write(reinterpret_cast<const uint8_t *>(&managementHeader), sizeof(managementHeader)) == sizeof(managementHeader) &&
+
+    bool managementOk =
+        file.write(reinterpret_cast<const uint8_t *>(&managementHeader), sizeof(managementHeader)) == sizeof(managementHeader) &&
         file.write(entry.managementFrame, entry.managementFrameLength) == entry.managementFrameLength;
     if (!managementOk) {
         file.close();
@@ -373,13 +503,15 @@ bool Storage::writeHandshakePcap(HandshakeEntry &entry)
         packetHeader.capturedLength = entry.hsFrameLength[index];
         packetHeader.originalLength = entry.hsFrameLength[index];
 
-        bool ok = file.write(reinterpret_cast<const uint8_t *>(&packetHeader), sizeof(packetHeader)) == sizeof(packetHeader) &&
+        bool ok =
+            file.write(reinterpret_cast<const uint8_t *>(&packetHeader), sizeof(packetHeader)) == sizeof(packetHeader) &&
             file.write(entry.hsFrames[index], entry.hsFrameLength[index]) == entry.hsFrameLength[index];
         if (!ok) {
             file.close();
             return false;
         }
     }
+
     file.close();
     return true;
 }
@@ -394,8 +526,17 @@ String Storage::pathFor(const char *fileName) const
 String Storage::macFileName(const uint8_t *bssid) const
 {
     char text[18];
-    snprintf(text, sizeof(text), "%02x%02x%02x%02x%02x%02x.pcap",
-        bssid[0], bssid[1], bssid[2], bssid[3], bssid[4], bssid[5]);
+    snprintf(
+        text,
+        sizeof(text),
+        "%02x%02x%02x%02x%02x%02x.pcap",
+        bssid[0],
+        bssid[1],
+        bssid[2],
+        bssid[3],
+        bssid[4],
+        bssid[5]
+    );
     return String(text);
 }
 
@@ -406,7 +547,6 @@ bool Storage::isKnownHandshakeFile(const String &fileName) const
             return true;
         }
     }
-
     return false;
 }
 
@@ -416,9 +556,10 @@ bool Storage::isSafeHandshakeFileName(const String &fileName) const
         return false;
     }
 
-    for (int i = 0; i < 12; ++i) {
-        char value = fileName[i];
-        bool hex = (value >= '0' && value <= '9') ||
+    for (int index = 0; index < 12; ++index) {
+        char value = fileName[index];
+        bool hex =
+            (value >= '0' && value <= '9') ||
             (value >= 'a' && value <= 'f') ||
             (value >= 'A' && value <= 'F');
         if (!hex) {

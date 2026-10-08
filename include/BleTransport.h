@@ -50,10 +50,44 @@ public:
      */
     void endStream() override;
 
+    /**
+     * Returns true while a BLE client is connected to the command service.
+     */
+    bool isConnected() const;
+
+    /**
+     * Returns true while the BLE command service is advertising.
+     */
+    bool isAdvertising() const;
+
 private:
+    /**
+     * Updates transport state when a BLE client connects.
+     */
+#if AIRTOOLS_NIMBLE_V2
+    void onConnect(NimBLEServer *server, NimBLEConnInfo &connInfo) override;
+#else
     void onConnect(NimBLEServer *server) override;
+#endif
+
+    /**
+     * Marks the transport for advertising restart after a BLE client disconnects.
+     */
+#if AIRTOOLS_NIMBLE_V2
+    void onDisconnect(NimBLEServer *server, NimBLEConnInfo &connInfo, int reason) override;
+#else
     void onDisconnect(NimBLEServer *server) override;
+#endif
+
+    /**
+     * Queues a command written to the BLE RX characteristic.
+     */
+#if AIRTOOLS_NIMBLE_V2
+    void onWrite(NimBLECharacteristic *characteristic, NimBLEConnInfo &connInfo) override;
+#else
     void onWrite(NimBLECharacteristic *characteristic) override;
+#endif
+
     void handlePendingCommands();
     void flushStreamBuffer();
     void notifyBytes(const uint8_t *data, size_t length);
