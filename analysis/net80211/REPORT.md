@@ -1,5 +1,9 @@
 # ESP32-C6 libnet80211: esp_wifi_80211_tx analysis
 
+> **Примечание.** Отчёт описывает vendor-реализацию. С 2026-10-30 в
+> `libnet80211.a` установлен бинарный патч whitelist (deauth/disassoc) —
+> см. [`PATCH.md`](PATCH.md): адреса, установка, резервные копии и откат.
+
 ## Source artifact
 
 Library:
