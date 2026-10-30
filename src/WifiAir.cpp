@@ -153,6 +153,9 @@ void WifiAir::clearTarget()
     }
 }
 
+/**
+ * Formats network observations and encodes the stored, NUL-terminated SSID bytes as hexadecimal ASCII.
+ */
 String WifiAir::formatNetworks() const
 {
     AirtoolsNetwork *snapshot = new AirtoolsNetwork[AIRTOOLS_MAX_NETWORKS];
@@ -170,8 +173,9 @@ String WifiAir::formatNetworks() const
         memcpy(snapshot, networks, sizeof(networks));
     }
 
-    String response = "OK networks\n";
-    response += "# bssid,channel,signal_dbm,beacons,probes,data,essid\n";
+    String response = "OK networks ssid_encoding=hex\n";
+    response += "# bssid,channel,signal_dbm,beacons,probes,data,ssid_hex\n";
+    constexpr char HEX_DIGITS[] = "0123456789ABCDEF";
 
     for (int index = 0; index < AIRTOOLS_MAX_NETWORKS; ++index) {
         const AirtoolsNetwork &network = snapshot[index];
@@ -191,7 +195,11 @@ String WifiAir::formatNetworks() const
         response += ",";
         response += network.data;
         response += ",";
-        response += network.essid;
+        for (size_t offset = 0; offset < sizeof(network.essid) && network.essid[offset]; ++offset) {
+            uint8_t byte = static_cast<uint8_t>(network.essid[offset]);
+            response += HEX_DIGITS[byte >> 4];
+            response += HEX_DIGITS[byte & 0x0f];
+        }
         response += "\n";
     }
 

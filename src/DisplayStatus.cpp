@@ -21,7 +21,7 @@ constexpr int BATTERY_UPDATE_THRESHOLD_MV = 50;
 }
 
 /**
- * Initializes the JD9853-compatible panel through the ST7789 command set.
+ * Initializes the JD9853-compatible panel and displays its firmware version at the title font size.
  */
 void DisplayStatus::begin()
 {
@@ -77,10 +77,9 @@ void DisplayStatus::begin()
     gfx->setCursor(STATUS_X, 6);
     gfx->print("AIRTOOLS");
 
-    // Firmware version stays on the title line, in a smaller font.
-    gfx->setTextSize(1);
+    gfx->setTextSize(2);
     gfx->setTextColor(COLOR_YELLOW);
-    gfx->setCursor(STATUS_X + 8 * 12 + 6, 12);
+    gfx->setCursor(STATUS_X + 8 * 12 + 6, 6);
     gfx->print("v");
     gfx->print(AIRTOOLS_FIRMWARE_VERSION_TEXT);
     gfx->setTextColor(COLOR_WHITE);
