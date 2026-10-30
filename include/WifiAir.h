@@ -102,7 +102,7 @@ private:
         uint8_t data[AIRTOOLS_MAX_CAPTURE_FRAME_BYTES];
     };
 
-    static constexpr int CAPTURE_QUEUE_DEPTH = 8;
+    static constexpr int CAPTURE_QUEUE_DEPTH = 16;
     static constexpr uint32_t CLIENT_ACTIVE_TTL_MS = 30000;
     static constexpr uint32_t REPLAY_INDICATOR_MS = 1500;
 
@@ -110,7 +110,7 @@ private:
     void handlePacket(const wifi_promiscuous_pkt_t *packet, wifi_promiscuous_pkt_type_t type);
     void accountAp(const uint8_t *bssid, const char *essid, int channel, int rssi, bool beacon, bool probe);
     void accountClient(const uint8_t *bssid, const uint8_t *station, int rssi);
-    void recordEapolIfPresent(const uint8_t *bssid, const uint8_t *frame, int length, uint8_t subtype, bool toDs, bool fromDs);
+    void recordEapolIfPresent(const uint8_t *bssid, const uint8_t *frame, int length);
     bool enqueueCaptureFrame(const uint8_t *bssid, const uint8_t *frame, uint32_t length, bool management, bool hasMic, bool hasAck);
     void drainCaptureQueue();
     const char *essidForLocked(const uint8_t *bssid) const;

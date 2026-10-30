@@ -216,7 +216,7 @@ bool AirtoolsCommandRouter::parseReplayCount(const String &command, int &count) 
 {
     String countText = valueOf(command, "count");
     if (countText.length() == 0) {
-        count = 5;
+        count = 10;
         return true;
     }
 

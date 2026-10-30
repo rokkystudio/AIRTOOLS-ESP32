@@ -67,6 +67,9 @@ void WifiAir::begin(Storage *storage)
     WiFi.disconnect(false, true);
     delay(100);
     esp_wifi_set_promiscuous(false);
+    wifi_promiscuous_filter_t promiscuousFilter = {};
+    promiscuousFilter.filter_mask = WIFI_PROMIS_FILTER_MASK_ALL;
+    esp_wifi_set_promiscuous_filter(&promiscuousFilter);
     esp_wifi_set_promiscuous_rx_cb(&WifiAir::promiscuousThunk);
     esp_wifi_set_channel(currentChannel, WIFI_SECOND_CHAN_NONE);
 }
@@ -509,33 +512,38 @@ void WifiAir::handlePacket(const wifi_promiscuous_pkt_t *packet, wifi_promiscuou
 
         accountAp(bssid, "", channel, rssi, false, false);
         accountClient(bssid, station, rssi);
-        recordEapolIfPresent(bssid, payload, length, frameSubtype, toDs, fromDs);
+        recordEapolIfPresent(bssid, payload, length);
     }
 }
 
-void WifiAir::recordEapolIfPresent(const uint8_t *bssid, const uint8_t *frame, int length, uint8_t subtype, bool toDs, bool fromDs)
+void WifiAir::recordEapolIfPresent(const uint8_t *bssid, const uint8_t *frame, int length)
 {
-    int headerLength = 24;
-    if (toDs && fromDs) {
-        headerLength += 6;
-    }
-    if ((subtype & 0x08) != 0) {
-        headerLength += 2;
-    }
-    if (length < headerLength + 8) {
+    if (length < 32) {
         return;
     }
 
-    const uint8_t *llc = frame + headerLength;
-    bool snap = llc[0] == 0xaa && llc[1] == 0xaa && llc[2] == 0x03 &&
-        llc[3] == 0x00 && llc[4] == 0x00 && llc[5] == 0x00;
-    uint16_t etherType = (static_cast<uint16_t>(llc[6]) << 8) | llc[7];
-    if (!snap || etherType != 0x888e) {
-        return;
+    // Locate the LLC/SNAP header instead of assuming a fixed 802.11 header size:
+    // QoS data adds 2 bytes, an HE/HT Control field adds 4 more, and A-MSDU
+    // subframes add a per-subframe header. A small search window keeps EAPOL
+    // detection stable across AP vendors and Wi-Fi 6 aggregation.
+    int searchEnd = length - 8;
+    if (searchEnd > 64) {
+        searchEnd = 64;
     }
 
-    // EAPOL payload begins after the 8-byte LLC/SNAP header.
-    int eapolOffset = headerLength + 8;
+    int eapolOffset = -1;
+    for (int offset = 24; offset <= searchEnd; ++offset) {
+        if (frame[offset] == 0xaa && frame[offset + 1] == 0xaa && frame[offset + 2] == 0x03 &&
+            frame[offset + 3] == 0x00 && frame[offset + 4] == 0x00 && frame[offset + 5] == 0x00 &&
+            frame[offset + 6] == 0x88 && frame[offset + 7] == 0x8e) {
+            eapolOffset = offset + 8;
+            break;
+        }
+    }
+
+    if (eapolOffset < 0 || length < eapolOffset + 8) {
+        return;
+    }
     if (length < eapolOffset + 8) {
         return;
     }
