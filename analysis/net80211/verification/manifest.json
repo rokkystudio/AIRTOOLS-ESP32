@@ -1,0 +1,138 @@
+{
+  "created_utc": "2026-10-30T16:03:11.872065+00:00",
+  "method": "riscv32-esp-elf-ar x; riscv32-esp-elf-readelf -h/-S/-r; riscv32-esp-elf-objdump -dr --disassemble=<symbol>",
+  "vendor_archives": {
+    "libnet80211.a": {
+      "path": "C:\\Users\\rokky\\.platformio\\packages\\framework-arduinoespressif32-libs\\esp32c6\\lib\\libnet80211.a",
+      "sha256": "9535c632d74bbf7d4997dd8306a27227ad588b80e0c60c03b7a1e5a41c5c0e4a",
+      "size": 1428030
+    },
+    "libpp.a": {
+      "path": "C:\\Users\\rokky\\.platformio\\packages\\framework-arduinoespressif32-libs\\esp32c6\\lib\\libpp.a",
+      "sha256": "99d572aeefa9ff6ff5951106a1afebb8e85931ddc5c5761f9d9fbd89a2c8524f",
+      "size": 887406
+    }
+  },
+  "original_objects": {
+    "ieee80211_output.o": {
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\archive_members\\ieee80211_output.o",
+      "sha256": "83c0057a24523e0cc43c0058c2cec3e95cfeae81af8a53e7ccf27e02a98011c4",
+      "size": 91724,
+      "elf32_rel_riscv": true
+    },
+    "pp.o": {
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\archive_members\\pp.o",
+      "sha256": "4a9880e0c4066ff699bb1f528b79be0eb19381df9d4fcc535e45e6b38dccab4e",
+      "size": 84224,
+      "elf32_rel_riscv": true
+    },
+    "lmac.o": {
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\archive_members\\lmac.o",
+      "sha256": "7f81e71abbd1baec5ffb197f410d3cce03deb54e7bcac9da90b74e01c2b664ca",
+      "size": 56268,
+      "elf32_rel_riscv": true
+    },
+    "hal_mac_tx.o": {
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\archive_members\\hal_mac_tx.o",
+      "sha256": "d2b92d4ada0992d19502001ddca55f8c49dc69f7dd4ee7adcb715e7aa5f01f0d",
+      "size": 27348,
+      "elf32_rel_riscv": true
+    }
+  },
+  "historical_objects": {
+    "ieee80211_output.o": {
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\ieee80211_output.o",
+      "sha256": "f750817425dd3f454c54fb245c6f689425739557a739f274e6545e0a5afb9c25",
+      "size": 86712
+    },
+    "pp.o": {
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\pp.o",
+      "sha256": "02c68bbaa789b142ac4b602856ebe3237897eb5a7253237366890be3e1fb5ca8",
+      "size": 82560
+    },
+    "lmac.o": {
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\lmac.o",
+      "sha256": "58a3908ebfb5f370bc77f12d77ae7bf78e5ec3fb3408d2ed0f5ea2e6785e43f6",
+      "size": 56444
+    },
+    "hal_mac_tx.o": {
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\hal_mac_tx.o",
+      "sha256": "d1e5f0d8938b1765ecfe1e3ac80e371467c48fe8e862a1cfe557d3fbba0aa08c",
+      "size": 27560
+    }
+  },
+  "disassembly": {
+    "esp_wifi_80211_tx": {
+      "object": "ieee80211_output.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\esp_wifi_80211_tx.disasm.txt",
+      "sha256": "3829acbb1a57a1721397821cc586b8e84e0dc65723be3ac7214f661ef6a1c789",
+      "bytes": 7614
+    },
+    "ieee80211_raw_frame_sanity_check": {
+      "object": "ieee80211_output.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\ieee80211_raw_frame_sanity_check.disasm.txt",
+      "sha256": "8290cc4e360933c394da7af3826bf258f9811cf63a5bbf4c3ae3f0b3e58b32ea",
+      "bytes": 11458
+    },
+    "ieee80211_output_raw_process": {
+      "object": "ieee80211_output.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\ieee80211_output_raw_process.disasm.txt",
+      "sha256": "b1ca8dd8ce58310c73706259a87b3595735756197673b44c06059dd5e782fa08",
+      "bytes": 8418
+    },
+    "ppTxPkt": {
+      "object": "pp.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\ppTxPkt.disasm.txt",
+      "sha256": "c40da268472cca651e98f3cea96a8c736f6f0e83ab18c34d0dbbd4a77342f9f6",
+      "bytes": 9498
+    },
+    "ppTxProtoProc": {
+      "object": "pp.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\ppTxProtoProc.disasm.txt",
+      "sha256": "5b6fbecb1c11a717b8437bce7f77dfe66ebe3e55428abeb4f97e23b0c54c2942",
+      "bytes": 2670
+    },
+    "ppProcTxSecFrame": {
+      "object": "pp.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\ppProcTxSecFrame.disasm.txt",
+      "sha256": "5d7fc8a67ee158ca495dec31f4c4b4425079a3af50b47fd228b989e077418fb6",
+      "bytes": 10154
+    },
+    "ppMapTxQueue": {
+      "object": "pp.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\ppMapTxQueue.disasm.txt",
+      "sha256": "abce49510d22afda2eed2f88e5e157d3f3e77551e6a59c4ac01335a523796902",
+      "bytes": 8525
+    },
+    "lmacTxFrame": {
+      "object": "lmac.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\lmacTxFrame.disasm.txt",
+      "sha256": "241a44c5bfb3fbdef82bcb4f88c48744726aa2cc4d85f0ec312b25e1f6c1df7f",
+      "bytes": 10522
+    },
+    "lmacSetTxFrame": {
+      "object": "lmac.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\lmacSetTxFrame.disasm.txt",
+      "sha256": "c68a095fe518a8c7847c5ac2ed5bcd8ea47cb8d3caf98bafb47f1726bf118091",
+      "bytes": 9073
+    },
+    "hal_mac_tx_set_ppdu": {
+      "object": "hal_mac_tx.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\hal_mac_tx_set_ppdu.disasm.txt",
+      "sha256": "d58ee15420a7060f40bec49f6be0ea8088f92402a3e7d8eaf0f8ac73542b7a94",
+      "bytes": 6511
+    },
+    "hal_mac_tx_config_edca": {
+      "object": "hal_mac_tx.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\hal_mac_tx_config_edca.disasm.txt",
+      "sha256": "aa186518215ad92edb8b36d1b33c4340d7178150d6c0c3d5614375eb00e91f48",
+      "bytes": 1739
+    },
+    "hal_mac_txq_enable": {
+      "object": "hal_mac_tx.o",
+      "path": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\verification\\current_disassembly\\hal_mac_txq_enable.disasm.txt",
+      "sha256": "6b3f1c23b2cfaf4c514661cace265cf1d5f1a6e834bbe1c3ceced2a436378228",
+      "bytes": 3495
+    }
+  }
+}

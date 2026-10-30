@@ -1,0 +1,176 @@
+00000000 <hal_mac_tx_set_ppdu>:
+   0:	7179                	addi	sp,sp,-48
+   2:	c85a                	sw	s6,16(sp)
+   4:	00052b03          	lw	s6,0(a0)
+   8:	d422                	sw	s0,40(sp)
+   a:	cc52                	sw	s4,24(sp)
+   c:	004b2783          	lw	a5,4(s6)
+  10:	d606                	sw	ra,44(sp)
+  12:	d226                	sw	s1,36(sp)
+  14:	43dc                	lw	a5,4(a5)
+  16:	d04a                	sw	s2,32(sp)
+  18:	ce4e                	sw	s3,28(sp)
+  1a:	ca56                	sw	s5,20(sp)
+  1c:	c65e                	sw	s7,12(sp)
+  1e:	c462                	sw	s8,8(sp)
+  20:	8b8d                	andi	a5,a5,3
+  22:	842a                	mv	s0,a0
+  24:	8a2e                	mv	s4,a1
+  26:	cf81                	beqz	a5,3e <.L207>
+			26: R_RISCV_RVC_BRANCH	.L207
+  28:	000006b7          	lui	a3,0x0
+			28: R_RISCV_HI20	.LANCHOR22
+			28: R_RISCV_RELAX	*ABS*
+  2c:	00068693          	mv	a3,a3
+			2c: R_RISCV_LO12_I	.LANCHOR22
+			2c: R_RISCV_RELAX	*ABS*
+  30:	4609                	li	a2,2
+  32:	6589                	lui	a1,0x2
+  34:	4519                	li	a0,6
+  36:	00000097          	auipc	ra,0x0
+			36: R_RISCV_CALL	wifi_log
+			36: R_RISCV_RELAX	*ABS*
+  3a:	000080e7          	jalr	ra # 36 <hal_mac_tx_set_ppdu+0x36>
+
+0000003e <.L207>:
+  3e:	8522                	mv	a0,s0
+  40:	00000097          	auipc	ra,0x0
+			40: R_RISCV_CALL	mac_tx_set_plcp0
+			40: R_RISCV_RELAX	*ABS*
+  44:	000080e7          	jalr	ra # 40 <.L207+0x2>
+  48:	8522                	mv	a0,s0
+  4a:	00000097          	auipc	ra,0x0
+			4a: R_RISCV_CALL	mac_tx_set_plcp1
+			4a: R_RISCV_RELAX	*ABS*
+  4e:	000080e7          	jalr	ra # 4a <.L207+0xc>
+  52:	00444703          	lbu	a4,4(s0)
+  56:	600a5ab7          	lui	s5,0x600a5
+  5a:	d64a8793          	addi	a5,s5,-668 # 600a4d64 <.L250+0x600a4806>
+  5e:	0712                	slli	a4,a4,0x4
+  60:	8f99                	sub	a5,a5,a4
+  62:	4398                	lw	a4,0(a5)
+  64:	034b2c03          	lw	s8,52(s6)
+  68:	000004b7          	lui	s1,0x0
+			68: R_RISCV_HI20	.LANCHOR0
+			68: R_RISCV_RELAX	*ABS*
+  6c:	9b5d                	andi	a4,a4,-9
+  6e:	c398                	sw	a4,0(a5)
+  70:	00cc4983          	lbu	s3,12(s8)
+  74:	00048b93          	mv	s7,s1
+			74: R_RISCV_LO12_I	.LANCHOR0
+			74: R_RISCV_RELAX	*ABS*
+  78:	00048493          	mv	s1,s1
+			78: R_RISCV_LO12_I	.LANCHOR0
+			78: R_RISCV_RELAX	*ABS*
+  7c:	854e                	mv	a0,s3
+  7e:	00000097          	auipc	ra,0x0
+			7e: R_RISCV_CALL	mac_tx_get_rts_rate
+			7e: R_RISCV_RELAX	*ABS*
+  82:	000080e7          	jalr	ra # 7e <.L207+0x40>
+  86:	0506                	slli	a0,a0,0x1
+  88:	955e                	add	a0,a0,s7
+  8a:	00050903          	lb	s2,0(a0)
+  8e:	00150783          	lb	a5,1(a0)
+  92:	19c1                	addi	s3,s3,-16
+  94:	0942                	slli	s2,s2,0x10
+  96:	07e2                	slli	a5,a5,0x18
+  98:	00f96933          	or	s2,s2,a5
+  9c:	0ff9f993          	zext.b	s3,s3
+  a0:	47cd                	li	a5,19
+  a2:	0737f163          	bgeu	a5,s3,104 <.L208>
+			a2: R_RISCV_BRANCH	.L208
+  a6:	85d2                	mv	a1,s4
+  a8:	8522                	mv	a0,s0
+  aa:	00000097          	auipc	ra,0x0
+			aa: R_RISCV_CALL	mac_tx_set_len
+			aa: R_RISCV_RELAX	*ABS*
+  ae:	000080e7          	jalr	ra # aa <.L207+0x6c>
+  b2:	8522                	mv	a0,s0
+  b4:	00000097          	auipc	ra,0x0
+			b4: R_RISCV_CALL	mac_tx_set_txop_q
+			b4: R_RISCV_RELAX	*ABS*
+  b8:	000080e7          	jalr	ra # b4 <.L207+0x76>
+  bc:	00cc4783          	lbu	a5,12(s8)
+  c0:	f8c00693          	li	a3,-116
+  c4:	4aca8a93          	addi	s5,s5,1196
+  c8:	0786                	slli	a5,a5,0x1
+  ca:	9bbe                	add	s7,s7,a5
+  cc:	00444783          	lbu	a5,4(s0)
+  d0:	000b8703          	lb	a4,0(s7)
+  d4:	02d787b3          	mul	a5,a5,a3
+  d8:	01276733          	or	a4,a4,s2
+  dc:	97d6                	add	a5,a5,s5
+  de:	c398                	sw	a4,0(a5)
+
+000000e0 <.L218>:
+  e0:	8522                	mv	a0,s0
+  e2:	00000097          	auipc	ra,0x0
+			e2: R_RISCV_CALL	mac_tx_set_pti
+			e2: R_RISCV_RELAX	*ABS*
+  e6:	000080e7          	jalr	ra # e2 <.L218+0x2>
+  ea:	50b2                	lw	ra,44(sp)
+  ec:	5422                	lw	s0,40(sp)
+  ee:	5492                	lw	s1,36(sp)
+  f0:	5902                	lw	s2,32(sp)
+  f2:	49f2                	lw	s3,28(sp)
+  f4:	4a62                	lw	s4,24(sp)
+  f6:	4ad2                	lw	s5,20(sp)
+  f8:	4b42                	lw	s6,16(sp)
+  fa:	4bb2                	lw	s7,12(sp)
+  fc:	4c22                	lw	s8,8(sp)
+  fe:	4501                	li	a0,0
+ 100:	6145                	addi	sp,sp,48
+ 102:	8082                	ret
+
+00000104 <.L208>:
+ 104:	000c2783          	lw	a5,0(s8)
+ 108:	85d2                	mv	a1,s4
+ 10a:	8522                	mv	a0,s0
+ 10c:	0407d563          	bgez	a5,156 <.L210>
+			10c: R_RISCV_BRANCH	.L210
+ 110:	00000097          	auipc	ra,0x0
+			110: R_RISCV_CALL	mac_tx_set_hesig
+			110: R_RISCV_RELAX	*ABS*
+ 114:	000080e7          	jalr	ra # 110 <.L208+0xc>
+
+00000118 <.L211>:
+ 118:	034b2783          	lw	a5,52(s6)
+ 11c:	4765                	li	a4,25
+ 11e:	00c7c783          	lbu	a5,12(a5)
+ 122:	02f77f63          	bgeu	a4,a5,160 <.L212>
+			122: R_RISCV_BRANCH	.L212
+ 126:	17d9                	addi	a5,a5,-10
+ 128:	0786                	slli	a5,a5,0x1
+ 12a:	97a6                	add	a5,a5,s1
+ 12c:	00078703          	lb	a4,0(a5)
+ 130:	00178783          	lb	a5,1(a5)
+
+00000134 <.L213>:
+ 134:	01276733          	or	a4,a4,s2
+ 138:	07a2                	slli	a5,a5,0x8
+ 13a:	8fd9                	or	a5,a5,a4
+ 13c:	00444703          	lbu	a4,4(s0)
+ 140:	f8c00693          	li	a3,-116
+ 144:	02d70733          	mul	a4,a4,a3
+ 148:	600a56b7          	lui	a3,0x600a5
+ 14c:	4ac68693          	addi	a3,a3,1196 # 600a54ac <.L250+0x600a4f4e>
+ 150:	9736                	add	a4,a4,a3
+ 152:	c31c                	sw	a5,0(a4)
+ 154:	b771                	j	e0 <.L218>
+			154: R_RISCV_RVC_JUMP	.L218
+
+00000156 <.L210>:
+ 156:	00000097          	auipc	ra,0x0
+			156: R_RISCV_CALL	mac_tx_set_htsig
+			156: R_RISCV_RELAX	*ABS*
+ 15a:	000080e7          	jalr	ra # 156 <.L210>
+ 15e:	bf6d                	j	118 <.L211>
+			15e: R_RISCV_RVC_JUMP	.L211
+
+00000160 <.L212>:
+ 160:	0786                	slli	a5,a5,0x1
+ 162:	94be                	add	s1,s1,a5
+ 164:	00048703          	lb	a4,0(s1) # 0 <hal_mac_tx_set_ppdu>
+ 168:	00148783          	lb	a5,1(s1)
+ 16c:	b7e1                	j	134 <.L213>
+			16c: R_RISCV_RVC_JUMP	.L213

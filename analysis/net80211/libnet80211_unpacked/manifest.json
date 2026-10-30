@@ -1,0 +1,362 @@
+{
+  "created_utc": "2026-10-30T16:41:44.348156+00:00",
+  "source_archive": "C:\\Users\\rokky\\.platformio\\packages\\framework-arduinoespressif32-libs\\esp32c6\\lib\\libnet80211.a",
+  "source_sha256": "9535c632d74bbf7d4997dd8306a27227ad588b80e0c60c03b7a1e5a41c5c0e4a",
+  "source_size": 1428030,
+  "archive_copy": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\libnet80211_unpacked\\original\\libnet80211.a",
+  "objects_directory": "D:\\PROJECTS\\AIRTOOLS-ESP32\\analysis\\net80211\\libnet80211_unpacked\\objects",
+  "member_count": 50,
+  "integrity_check": "Every extracted file matched its original GNU ar member byte-for-byte; all files are ELF32 little-endian RISC-V relocatable objects.",
+  "members": [
+    {
+      "index": 1,
+      "name": "ieee80211_crypto_sms4.o",
+      "size": 2468,
+      "sha256": "4d0d0a9ffbb8219cbfca074843d0d533a81202ba5a27c0a632648fe5b6544355",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 2,
+      "name": "ieee80211_btwt.o",
+      "size": 12868,
+      "sha256": "42b85014dc90c689a55815dce6b99e5011b7f9e8240727ab28419033c258fadb",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 3,
+      "name": "ieee80211_regdomain.o",
+      "size": 10488,
+      "sha256": "a0705bbe23fbbe59f23f66c1e51e60bfd2e460e9be1bd45a2d492bcf5809359e",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 4,
+      "name": "ieee80211_nan_sd.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 5,
+      "name": "ieee80211.o",
+      "size": 20964,
+      "sha256": "432d9799513983f621a6a2568abdeca881a90dacb9da6164aab2d6d45efe970a",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 6,
+      "name": "ieee80211_mbssid.o",
+      "size": 5884,
+      "sha256": "d8c722f07bedc5fada26a1c78c35a2dd4d15dbc1679d96b9f6573fb3c8126a3b",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 7,
+      "name": "ieee80211_crypto.o",
+      "size": 9792,
+      "sha256": "27dfd430c8836abbd03511e7d1c7829676e80ad429ba512b33a80730c8ee3076",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 8,
+      "name": "ieee80211_crypto_ccmp.o",
+      "size": 5000,
+      "sha256": "54b6e2fc5c6b15e02572d89b0ff721412e73886a4a3ee7d82c257d4a096322ac",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 9,
+      "name": "ieee80211_action.o",
+      "size": 12984,
+      "sha256": "733c3223769119960a4dcfc95e2ad32db0e00b998c860cd5577d3acf0c688809",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 10,
+      "name": "ieee80211_he.o",
+      "size": 58304,
+      "sha256": "b9b509febb9d6913b649e4646cd15b5067afa24dc4484f7d4e7004d92280b1ed",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 11,
+      "name": "ieee80211_output.o",
+      "size": 91724,
+      "sha256": "83c0057a24523e0cc43c0058c2cec3e95cfeae81af8a53e7ccf27e02a98011c4",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 12,
+      "name": "ieee80211_hostap.o",
+      "size": 70916,
+      "sha256": "0c0f29e232d3243fbc7d598b766bfd9ccece8f2216747f01178a4aa0bdcf5858",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 13,
+      "name": "ieee80211_node.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 14,
+      "name": "ieee80211_mesh_quick.o",
+      "size": 7724,
+      "sha256": "9c3ff692cba28fe2ab4a6f5bb786e43196d77e7862c4e5aab2d6244135bbe964",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 15,
+      "name": "ieee80211_twt.o",
+      "size": 54500,
+      "sha256": "548af7aa921700248745e0c8a167946815b058f5ed19d7767f3c1e4a6f1dd318",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 16,
+      "name": "ieee80211_phy.o",
+      "size": 10020,
+      "sha256": "dde1b919d484bbb02a9aa0219747ac26f6813d6dd79b2d9870ad5bf4629bf99a",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 17,
+      "name": "ieee80211_nan_datapath.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 18,
+      "name": "wl_chm.o",
+      "size": 14356,
+      "sha256": "e7d82e7a97b5247e3068de2aa0a6596688622ed0c96611fc5d2dd6ec30f272ec",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 19,
+      "name": "ieee80211_crypto_tkip.o",
+      "size": 2028,
+      "sha256": "a29cfbd55b536fd2e2dca5de358dfdbe7a971ff7a852ebe40d076b25e8d4b735",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 20,
+      "name": "ieee80211_nan_common.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 21,
+      "name": "ieee80211_power.o",
+      "size": 8576,
+      "sha256": "1d2b2de51f7375f956888fdcb3bdf7ef9e41fec08eaa4c625eb228bf2cb430d0",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 22,
+      "name": "ieee80211_ets.o",
+      "size": 2268,
+      "sha256": "d902948be501977af971cbe76410bdacc09a94f4e200ba1779af083a3a5b6e4a",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 23,
+      "name": "if_eagle.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 24,
+      "name": "wl_offchan.o",
+      "size": 10128,
+      "sha256": "a8f2ea38e62795f9d4a63ec19987f293e52392007e8acfc0d4eb93b13cf69c28",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 25,
+      "name": "ieee80211_debug.o",
+      "size": 7424,
+      "sha256": "4dce670fb8e788f112883b2e3330a3cfd122f9b55a0bebf8920cb5c731409b2d",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 26,
+      "name": "ieee80211_scan.o",
+      "size": 86268,
+      "sha256": "cc903829ad708cd073a24b528a1c40d39dda676bbb01398f8922a7a5cde64b51",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 27,
+      "name": "ieee80211_crypto_wep.o",
+      "size": 1312,
+      "sha256": "df566c4a9c50b6688abfc80c568116890d7e7a4161b5c1b857ddf482c8f39590",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 28,
+      "name": "ieee80211_vht.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 29,
+      "name": "ieee80211_input.o",
+      "size": 37272,
+      "sha256": "d6b464b4801567a39405f74ccc5e49c34dc737c35f0eea69eabac1ff9184a14e",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 30,
+      "name": "ieee80211_ie_vendor.o",
+      "size": 4116,
+      "sha256": "b7f46004e0266c61e7628fcde07c242883136e46c13caea82eb1e60af5594ebb",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 31,
+      "name": "ieee80211_rfid.o",
+      "size": 2196,
+      "sha256": "9fe86d44847c04239baacf01fa2d817281303275f4a45ddfdf87286ede093a33",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 32,
+      "name": "ieee80211_ht.o",
+      "size": 64400,
+      "sha256": "75b374289581b6ffdd5dd786c9b25a0c4641cdd378e64e43f348ec90ebb41887",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 33,
+      "name": "ieee80211_nvs.o",
+      "size": 34752,
+      "sha256": "ba36ba4ad362f41f72a3cae80d0631f2da5e352bc0122a99d766a65679844b72",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 34,
+      "name": "ieee80211_nan_disc.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 35,
+      "name": "ieee80211_supplicant.o",
+      "size": 54200,
+      "sha256": "1165a73dc1384ec9e31e02651a0845b91c9341f8b26a5812114316c60adc349d",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 36,
+      "name": "ieee80211_ioctl.o",
+      "size": 177664,
+      "sha256": "05a395d796cf8161f151a65a0a3b8af442d654346cb410ffa66657cca9ca97a0",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 37,
+      "name": "ieee80211_timer.o",
+      "size": 29076,
+      "sha256": "e55fc2d03d78a9a0a218dbd3032c9d0367cbac178b4f092f18b8ed507245a437",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 38,
+      "name": "ieee80211_crypto_gcmp.o",
+      "size": 1816,
+      "sha256": "e387390cc61f8c2e9a08e5ca2cd8777e58f1634815d9bbf1fecf2bf4430258b1",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 39,
+      "name": "ieee80211_ftm.o",
+      "size": 49224,
+      "sha256": "93a4539f302fbf406619806daff6aa09167abd9cdd8d71681c1175e152afdcb3",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 40,
+      "name": "ieee80211_api.o",
+      "size": 206644,
+      "sha256": "c492ced838f459006d364942cca8466174d7d4181f53ae53e8ed8a71c0a223fc",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 41,
+      "name": "wl_cnx.o",
+      "size": 109092,
+      "sha256": "9459f64068a9dbd10ea5e40fd95f268a55790bbd2a0636d9154b9e5eecb2ffd6",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 42,
+      "name": "ieee80211_action_vendor.o",
+      "size": 10432,
+      "sha256": "f8b98b627f994a7815ab51bdce9f47368ae59cc76776f8415d0096314ebc073b",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 43,
+      "name": "ieee80211_sta.o",
+      "size": 84028,
+      "sha256": "42b4710eb34d1a8fc2410aac980cf2dfc4f762c1a00bfdff3ea6ff0e98818900",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 44,
+      "name": "ieee80211_proto.o",
+      "size": 4236,
+      "sha256": "2747abb14fc177c413d59b3f08023d44ca8e2fc193d6e8935e950e642b8a18da",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 45,
+      "name": "test.o",
+      "size": 2628,
+      "sha256": "33013e8bfbdb9fd7af45b5b4753bf5dd675f0f96abcaa301f4394cf17b576e95",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 46,
+      "name": "test_rx_bfee.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 47,
+      "name": "test_rx_htc.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 48,
+      "name": "test_rx_sniffer.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 49,
+      "name": "test_rx_trig.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    },
+    {
+      "index": 50,
+      "name": "test_tx_mbssid.o",
+      "size": 464,
+      "sha256": "5623f5ec0bfbb5500c51d7f45233a50666c47a21400c1779524ae98dbfc080fa",
+      "elf": "ELF32 little-endian RISC-V REL"
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+00000000 <esp_wifi_80211_tx>:
+   0:	7179                	addi	sp,sp,-48
+   2:	d422                	sw	s0,40(sp)
+   4:	d226                	sw	s1,36(sp)
+   6:	cc52                	sw	s4,24(sp)
+   8:	ca56                	sw	s5,20(sp)
+   a:	c85a                	sw	s6,16(sp)
+   c:	d606                	sw	ra,44(sp)
+   e:	d04a                	sw	s2,32(sp)
+  10:	ce4e                	sw	s3,28(sp)
+  12:	842a                	mv	s0,a0
+  14:	8aae                	mv	s5,a1
+  16:	8b32                	mv	s6,a2
+  18:	8a36                	mv	s4,a3
+  1a:	00000097          	auipc	ra,0x0
+			1a: R_RISCV_CALL	ieee80211_raw_frame_sanity_check
+			1a: R_RISCV_RELAX	*ABS*
+  1e:	000080e7          	jalr	ra # 1a <esp_wifi_80211_tx+0x1a>
+  22:	84aa                	mv	s1,a0
+  24:	ed05                	bnez	a0,5c <.L1097>
+			24: R_RISCV_RVC_BRANCH	.L1097
+  26:	000009b7          	lui	s3,0x0
+			26: R_RISCV_HI20	g_osi_funcs_p
+			26: R_RISCV_RELAX	*ABS*
+  2a:	0009a783          	lw	a5,0(s3) # 0 <esp_wifi_80211_tx>
+			2a: R_RISCV_LO12_I	g_osi_funcs_p
+			2a: R_RISCV_RELAX	*ABS*
+  2e:	00000937          	lui	s2,0x0
+			2e: R_RISCV_HI20	g_wifi_global_lock
+			2e: R_RISCV_RELAX	*ABS*
+  32:	00092503          	lw	a0,0(s2) # 0 <esp_wifi_80211_tx>
+			32: R_RISCV_LO12_I	g_wifi_global_lock
+			32: R_RISCV_RELAX	*ABS*
+  36:	4bfc                	lw	a5,84(a5)
+  38:	9782                	jalr	a5
+  3a:	8556                	mv	a0,s5
+  3c:	865a                	mv	a2,s6
+  3e:	4585                	li	a1,1
+  40:	00000097          	auipc	ra,0x0
+			40: R_RISCV_CALL	ic_ebuf_alloc
+			40: R_RISCV_RELAX	*ABS*
+  44:	000080e7          	jalr	ra # 40 <esp_wifi_80211_tx+0x40>
+  48:	8aaa                	mv	s5,a0
+  4a:	e505                	bnez	a0,72 <.L1099>
+			4a: R_RISCV_RVC_BRANCH	.L1099
+  4c:	0009a783          	lw	a5,0(s3)
+			4c: R_RISCV_LO12_I	g_osi_funcs_p
+			4c: R_RISCV_RELAX	*ABS*
+  50:	00092503          	lw	a0,0(s2)
+			50: R_RISCV_LO12_I	g_wifi_global_lock
+			50: R_RISCV_RELAX	*ABS*
+  54:	10100493          	li	s1,257
+  58:	4fbc                	lw	a5,88(a5)
+  5a:	9782                	jalr	a5
+
+0000005c <.L1097>:
+  5c:	50b2                	lw	ra,44(sp)
+  5e:	5422                	lw	s0,40(sp)
+  60:	5902                	lw	s2,32(sp)
+  62:	49f2                	lw	s3,28(sp)
+  64:	4a62                	lw	s4,24(sp)
+  66:	4ad2                	lw	s5,20(sp)
+  68:	4b42                	lw	s6,16(sp)
+  6a:	8526                	mv	a0,s1
+  6c:	5492                	lw	s1,36(sp)
+  6e:	6145                	addi	sp,sp,48
+  70:	8082                	ret
+
+00000072 <.L1099>:
+  72:	00000097          	auipc	ra,0x0
+			72: R_RISCV_CALL	chm_get_current_channel
+			72: R_RISCV_RELAX	*ABS*
+  76:	000080e7          	jalr	ra # 72 <.L1099>
+  7a:	00054503          	lbu	a0,0(a0)
+  7e:	1b21                	addi	s6,s6,-24
+  80:	00000097          	auipc	ra,0x0
+			80: R_RISCV_CALL	chm_get_band_from_chan
+			80: R_RISCV_RELAX	*ABS*
+  84:	000080e7          	jalr	ra # 80 <.L1099+0xe>
+  88:	016a9b23          	sh	s6,22(s5)
+  8c:	034aab03          	lw	s6,52(s5)
+  90:	47e1                	li	a5,24
+  92:	00fa9a23          	sh	a5,20(s5)
+  96:	000b2783          	lw	a5,0(s6)
+  9a:	6711                	lui	a4,0x4
+  9c:	8fd9                	or	a5,a5,a4
+  9e:	00fb2023          	sw	a5,0(s6)
+  a2:	00000097          	auipc	ra,0x0
+			a2: R_RISCV_CALL	ic_get_default_sched
+			a2: R_RISCV_RELAX	*ABS*
+  a6:	000080e7          	jalr	ra # a2 <.L1099+0x30>
+  aa:	00ab2e23          	sw	a0,28(s6)
+  ae:	0ff47b13          	zext.b	s6,s0
+  b2:	855a                	mv	a0,s6
+  b4:	00000097          	auipc	ra,0x0
+			b4: R_RISCV_CALL	ic_get_80211_tx_rate
+			b4: R_RISCV_RELAX	*ABS*
+  b8:	000080e7          	jalr	ra # b4 <.L1099+0x42>
+  bc:	034aa783          	lw	a5,52(s5)
+  c0:	004c                	addi	a1,sp,4
+  c2:	c202                	sw	zero,4(sp)
+  c4:	00a78623          	sb	a0,12(a5)
+  c8:	855a                	mv	a0,s6
+  ca:	c402                	sw	zero,8(sp)
+  cc:	c602                	sw	zero,12(sp)
+  ce:	00000097          	auipc	ra,0x0
+			ce: R_RISCV_CALL	ic_get_80211_tx_rate_config
+			ce: R_RISCV_RELAX	*ABS*
+  d2:	000080e7          	jalr	ra # ce <.L1099+0x5c>
+  d6:	4722                	lw	a4,8(sp)
+  d8:	034aa783          	lw	a5,52(s5)
+  dc:	c34d                	beqz	a4,17e <.L1100>
+			dc: R_RISCV_RVC_BRANCH	.L1100
+  de:	00e78623          	sb	a4,12(a5)
+
+000000e2 <.L1101>:
+  e2:	4692                	lw	a3,4(sp)
+  e4:	4719                	li	a4,6
+  e6:	02e69c63          	bne	a3,a4,11e <.L1103>
+			e6: R_RISCV_BRANCH	.L1103
+  ea:	4398                	lw	a4,0(a5)
+  ec:	800006b7          	lui	a3,0x80000
+  f0:	8f55                	or	a4,a4,a3
+  f2:	c398                	sw	a4,0(a5)
+  f4:	00c14703          	lbu	a4,12(sp)
+  f8:	02f7c683          	lbu	a3,47(a5)
+  fc:	0719                	addi	a4,a4,6 # 4006 <.L1239+0x3980>
+  fe:	8b3d                	andi	a4,a4,15
+ 100:	070e                	slli	a4,a4,0x3
+ 102:	f876f693          	andi	a3,a3,-121
+ 106:	8f55                	or	a4,a4,a3
+ 108:	02e787a3          	sb	a4,47(a5)
+ 10c:	00d14703          	lbu	a4,13(sp)
+ 110:	c719                	beqz	a4,11e <.L1103>
+			110: R_RISCV_RVC_BRANCH	.L1103
+ 112:	0317c703          	lbu	a4,49(a5)
+ 116:	f8076713          	ori	a4,a4,-128
+ 11a:	02e788a3          	sb	a4,49(a5)
+
+0000011e <.L1103>:
+ 11e:	00000737          	lui	a4,0x0
+			11e: R_RISCV_HI20	g_ic
+			11e: R_RISCV_RELAX	*ABS*
+ 122:	00070713          	mv	a4,a4
+			122: R_RISCV_LO12_I	g_ic
+			122: R_RISCV_RELAX	*ABS*
+ 126:	ec39                	bnez	s0,184 <.L1105>
+			126: R_RISCV_RVC_BRANCH	.L1105
+ 128:	2a674703          	lbu	a4,678(a4) # 2a6 <.L1132+0x6>
+
+0000012c <.L1115>:
+ 12c:	4b94                	lw	a3,16(a5)
+ 12e:	1779                	addi	a4,a4,-2
+ 130:	fffc0637          	lui	a2,0xfffc0
+ 134:	00173713          	seqz	a4,a4
+ 138:	167d                	addi	a2,a2,-1 # fffbffff <.L1239+0xfffbf979>
+ 13a:	074a                	slli	a4,a4,0x12
+ 13c:	8ef1                	and	a3,a3,a2
+ 13e:	8f55                	or	a4,a4,a3
+ 140:	cb98                	sw	a4,16(a5)
+ 142:	000a0663          	beqz	s4,14e <.L1107>
+			142: R_RISCV_BRANCH	.L1107
+ 146:	4398                	lw	a4,0(a5)
+ 148:	00176713          	ori	a4,a4,1
+ 14c:	c398                	sw	a4,0(a5)
+
+0000014e <.L1107>:
+ 14e:	4b98                	lw	a4,16(a5)
+ 150:	fff806b7          	lui	a3,0xfff80
+ 154:	16fd                	addi	a3,a3,-1 # fff7ffff <.L1239+0xfff7f979>
+ 156:	8805                	andi	s0,s0,1
+ 158:	8f75                	and	a4,a4,a3
+ 15a:	044e                	slli	s0,s0,0x13
+ 15c:	8f41                	or	a4,a4,s0
+ 15e:	cb98                	sw	a4,16(a5)
+ 160:	10000713          	li	a4,256
+ 164:	cbd8                	sw	a4,20(a5)
+ 166:	8556                	mv	a0,s5
+ 168:	00000097          	auipc	ra,0x0
+			168: R_RISCV_CALL	ieee80211_post_hmac_tx
+			168: R_RISCV_RELAX	*ABS*
+ 16c:	000080e7          	jalr	ra # 168 <.L1107+0x1a>
+ 170:	0009a783          	lw	a5,0(s3)
+			170: R_RISCV_LO12_I	g_osi_funcs_p
+			170: R_RISCV_RELAX	*ABS*
+ 174:	00092503          	lw	a0,0(s2)
+			174: R_RISCV_LO12_I	g_wifi_global_lock
+			174: R_RISCV_RELAX	*ABS*
+ 178:	4fbc                	lw	a5,88(a5)
+ 17a:	9782                	jalr	a5
+ 17c:	b5c5                	j	5c <.L1097>
+			17c: R_RISCV_RVC_JUMP	.L1097
+
+0000017e <.L1100>:
+ 17e:	00078623          	sb	zero,12(a5)
+ 182:	b785                	j	e2 <.L1101>
+			182: R_RISCV_RVC_JUMP	.L1101
+
+00000184 <.L1105>:
+ 184:	2a274703          	lbu	a4,674(a4)
+ 188:	b755                	j	12c <.L1115>
+			188: R_RISCV_RVC_JUMP	.L1115

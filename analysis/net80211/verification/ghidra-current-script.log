@@ -1,0 +1,11 @@
+2026-10-30 19:18:16 INFO  DecompileSelected.java> PROGRAM=ieee80211_output.o  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> LANGUAGE=RISCV:LE:32:AndeStar_v5  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> COMPILER=gcc  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> ENTRY=ram:000133aa  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> SIGNATURE=undefined esp_wifi_80211_tx(void)  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> ENTRY=ram:00013198  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> SIGNATURE=undefined ieee80211_raw_frame_sanity_check(void)  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> ENTRY=ram:00010288  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> SIGNATURE=undefined ieee80211_post_hmac_tx(void)  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> ENTRY=ram:00012fd6  
+2026-10-30 19:18:16 INFO  DecompileSelected.java> SIGNATURE=undefined ieee80211_output_raw_process(void)  

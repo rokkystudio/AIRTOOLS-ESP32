@@ -1,0 +1,402 @@
+INFO  Using log config file: jar:file:/C:/Users/rokky/Desktop/ghidra_12.1.3_PUBLIC/Ghidra/Framework/Generic/lib/Generic.jar!/generic.log4j.xml (LoggingInitialization)  
+INFO  Using log file: D:\PROJECTS\AIRTOOLS-ESP32\analysis\net80211\verification\ghidra-current-analysis.log (LoggingInitialization)  
+INFO  Loading user preferences: C:\Users\rokky\AppData\Roaming\ghidra\ghidra_12.1.3_PUBLIC\preferences (Preferences)  
+INFO  Searching for classes... (ClassSearcher)  
+INFO  Class search complete (1821 ms) (ClassSearcher)  
+INFO  Initializing SSL Context (DefaultSSLContextInitializer)  
+INFO  Initializing Random Number Generator... (SecureRandomFactory)  
+INFO  Random Number Generator initialization complete: SHA1PRNG (SecureRandomFactory)  
+INFO  Trust manager disabled, cacerts have not been set (DefaultTrustManagerFactory)  
+INFO  Starting cache cleanup: C:\Users\rokky\AppData\Local\ghidra\fscache2 (FileCacheMaintenanceDaemon)  
+INFO  Finished cache cleanup, estimated storage used: 0 (FileCacheMaintenanceDaemon)  
+INFO  Headless startup complete (5486 ms) (AnalyzeHeadless)  
+INFO  Class searcher loaded 59 extension points (20 false positives) (ClassSearcher)  
+INFO  HEADLESS Script Paths:
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\FunctionID\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Debug\Debugger-rmi-trace\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\Decompiler\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\BSim\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Debug\Debugger\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\FileFormats\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\VersionTracking\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\DecompilerDependent\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\PDB\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\WildcardAssembler\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Processors\DATA\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Processors\JVM\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\BytePatterns\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Processors\Atmel\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\MicrosoftCodeAnalyzer\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\SwiftDemangler\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Processors\8051\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\GnuDemangler\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\SystemEmulation\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Processors\PIC\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\Base\ghidra_scripts
+    C:\Users\rokky\Desktop\ghidra_12.1.3_PUBLIC\Ghidra\Features\PyGhidra\ghidra_scripts
+    D:\PROJECTS\AIRTOOLS-ESP32\analysis\net80211 (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Creating project: D:\PROJECTS\AIRTOOLS-ESP32\analysis\net80211\verification\ghidra-project-current\esp32c6-current-net80211 (HeadlessAnalyzer)  
+INFO  Creating project: D:\PROJECTS\AIRTOOLS-ESP32\analysis\net80211\verification\ghidra-project-current\esp32c6-current-net80211 (DefaultProject)  
+INFO  REPORT: Processing input files:  (HeadlessAnalyzer)  
+INFO       project: D:\PROJECTS\AIRTOOLS-ESP32\analysis\net80211\verification\ghidra-project-current\esp32c6-current-net80211 (HeadlessAnalyzer)  
+INFO  IMPORTING: file:///D:/PROJECTS/AIRTOOLS-ESP32/analysis/net80211/verification/archive_members/ieee80211_output.o (HeadlessAnalyzer)  
+INFO  Using Loader: Executable and Linking Format (ELF) (ProgramLoader)  
+INFO  Using Language/Compiler: RISCV:LE:32:AndeStar_v5:gcc (ProgramLoader)  
+INFO  Using Library Search Path: [., C:\WINDOWS\SysWOW64, C:\Users\rokky\.gradle\jdks\eclipse_adoptium-21-amd64-windows.2\bin, C:\WINDOWS\Sun\Java\bin, C:\WINDOWS\system32, C:\WINDOWS, C:\Program Files\Common Files\Oracle\Java\javapath, C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9\bin, C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9\libnvvp, C:\Program Files\Python310\Scripts\, C:\Program Files\Python310\, C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler, C:\WINDOWS\System32\Wbem, C:\WINDOWS\System32\WindowsPowerShell\v1.0\, C:\WINDOWS\System32\OpenSSH\, C:\Program Files (x86)\AMD\ATI.ACE\Core-Static, C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static, C:\Program Files\dotnet\, C:\Program Files\Microsoft SQL Server\130\Tools\Binn\, C:\Program Files\Java\jre1.8.0_291\bin, C:\Users\rokky\AppData\Local\Microsoft\WindowsApps, C:\Users\rokky\.dotnet\tools, C:\Users\rokky\AppData\Roaming\Python\Python310\Scripts\, C:\Program Files\PuTTY\, C:\Cygwin64\bin, C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common, C:\wamp\bin\php\php7.4.33, C:\Program Files (x86)\Common Files\Acronis\SnapAPI\, C:\Program Files (x86)\dotnet\, C:\Program Files\NVIDIA Corporation\NVIDIA app\NvDLISR, C:\Program Files\Git\cmd, C:\Users\rokky\AppData\Local\Programs\Python\Python310\Scripts, C:\Users\rokky\AppData\Local\Programs\Python\Python310\, C:\Program Files\NVIDIA Corporation\Nsight Compute 2025.2.1\, C:\Program Files\Go\bin, D:\ANDROID\SDK\platform-tools, C:\Program Files\nodejs\, C:\Program Files\GitHub CLI\, C:\Program Files (x86)\Common Files\Oracle\Java\javapath, D:\CUDA\bin, D:\CUDA\libnvvp, C:\adb, C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.4.1\, c:\users\rokky\.local\bin, C:\Users\rokky\AppData\Local\Microsoft\WinGet\Links, C:\Users\rokky\go\bin, C:\Users\rokky\AppData\Roaming\npm, C:\msys64\mingw64\bin, C:\Program Files (x86)\GnuWin32\bin, C:\Users\rokky\AppData\Local\Microsoft\WinGet\Packages\Google.Protobuf_Microsoft.Winget.Source_8wekyb3d8bbwe\bin] (ProgramLoader)  
+INFO  Additional info:
+Loading file:///D:/PROJECTS/AIRTOOLS-ESP32/analysis/net80211/verification/archive_members/ieee80211_output.o?MD5=e198e99697bda8c333b92fa99999410d...
+Skipping section [.text] with invalid size 0x0
+Skipping section [.data] with invalid size 0x0
+Skipping section [.bss] with invalid size 0x0
+------------------------------------------------
+
+ (ProgramLoader)  
+INFO  IMPORTING: Loaded 0 additional files (HeadlessAnalyzer)  
+INFO  ANALYZING all memory and code: file:///D:/PROJECTS/AIRTOOLS-ESP32/analysis/net80211/verification/archive_members/ieee80211_output.o (HeadlessAnalyzer)  
+INFO  Packed database cache: C:\Users\rokky\AppData\Local\ghidra\packed-db-cache (PackedDatabaseCache)  
+INFO  Applied data type archive: generic_clib (ApplyDataArchiveAnalyzer)  
+INFO  -----------------------------------------------------
+    ASCII Strings                              0.717 secs
+    Apply Data Archives                        1.503 secs
+    Call Convention ID                         0.010 secs
+    Call-Fixup Installer                       0.012 secs
+    Create Address Tables                      0.023 secs
+    Create Address Tables - One Time           0.004 secs
+    Create Function                            0.056 secs
+    Data Reference                             0.059 secs
+    Decompiler Switch Analysis                 0.664 secs
+    Demangler GNU                              0.293 secs
+    Disassemble Entry Points                   0.726 secs
+    Disassemble Entry Points - One Time        0.002 secs
+    Embedded Media                             0.031 secs
+    External Entry References                  0.002 secs
+    Function ID                                0.147 secs
+    Function Start Search                      0.017 secs
+    Non-Returning Functions - Discovered       0.003 secs
+    Non-Returning Functions - Known            0.012 secs
+    RISCV Constant Reference Analyzer          0.653 secs
+    Reference                                  0.074 secs
+    Shared Return Calls                        0.073 secs
+    Stack                                      0.601 secs
+    Subroutine References                      0.006 secs
+    Subroutine References - One Time           0.008 secs
+-----------------------------------------------------
+     Total Time   5 secs
+-----------------------------------------------------
+ (AutoAnalysisManager)  
+INFO  REPORT: Analysis succeeded for file: file:///D:/PROJECTS/AIRTOOLS-ESP32/analysis/net80211/verification/archive_members/ieee80211_output.o (HeadlessAnalyzer)  
+INFO  REPORT: Execute script: DecompileSelected.java  (HeadlessAnalyzer)  
+INFO  SCRIPT: D:\PROJECTS\AIRTOOLS-ESP32\analysis\net80211\DecompileSelected.java (HeadlessAnalyzer)  
+INFO  DecompileSelected.java> PROGRAM=ieee80211_output.o (GhidraScript)  
+INFO  DecompileSelected.java> LANGUAGE=RISCV:LE:32:AndeStar_v5 (GhidraScript)  
+INFO  DecompileSelected.java> COMPILER=gcc (GhidraScript)  
+INFO  DecompileSelected.java> 
+===== esp_wifi_80211_tx ===== (GhidraScript)  
+INFO  DecompileSelected.java> ENTRY=ram:000133aa (GhidraScript)  
+INFO  DecompileSelected.java> SIGNATURE=undefined esp_wifi_80211_tx(void) (GhidraScript)  
+INFO  DecompileSelected.java> 
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+int esp_wifi_80211_tx(uint param_1,undefined4 param_2,undefined4 param_3,int param_4)
+
+{
+  char cVar1;
+  undefined1 uVar2;
+  int iVar3;
+  int iVar4;
+  undefined1 *puVar5;
+  uint uVar6;
+  uint *puVar7;
+  int iStack_2c;
+  int iStack_28;
+  undefined4 uStack_24;
+  
+  iVar3 = ieee80211_raw_frame_sanity_check();
+  if (iVar3 == 0) {
+    (**(code **)(_g_osi_funcs_p + 0x54))(_g_wifi_global_lock);
+    iVar4 = ic_ebuf_alloc(param_2,1,param_3);
+    if (iVar4 == 0) {
+      iVar3 = 0x101;
+      (**(code **)(_g_osi_funcs_p + 0x58))(_g_wifi_global_lock);
+    }
+    else {
+      puVar5 = (undefined1 *)chm_get_current_channel();
+      chm_get_band_from_chan(*puVar5);
+      *(short *)(iVar4 + 0x16) = (short)param_3 + -0x18;
+      puVar7 = *(uint **)(iVar4 + 0x34);
+      *(undefined2 *)(iVar4 + 0x14) = 0x18;
+      *puVar7 = *puVar7 | 0x4000;
+      uVar6 = ic_get_default_sched();
+      puVar7[7] = uVar6;
+      uVar2 = ic_get_80211_tx_rate(param_1 & 0xff);
+      iStack_2c = 0;
+      *(undefined1 *)(*(int *)(iVar4 + 0x34) + 0xc) = uVar2;
+      iStack_28 = 0;
+      uStack_24 = 0;
+      ic_get_80211_tx_rate_config(param_1 & 0xff,&iStack_2c);
+      puVar7 = *(uint **)(iVar4 + 0x34);
+      if (iStack_28 == 0) {
+        *(undefined1 *)(puVar7 + 3) = 0;
+      }
+      else {
+        *(char *)(puVar7 + 3) = (char)iStack_28;
+      }
+      if (iStack_2c == 6) {
+        *puVar7 = *puVar7 | 0x80000000;
+        *(byte *)((int)puVar7 + 0x2f) =
+             (byte)(((uStack_24 & 0xff) + 6 & 0xf) << 3) | *(byte *)((int)puVar7 + 0x2f) & 0x87;
+        if (uStack_24._1_1_ != '\0') {
+          *(byte *)((int)puVar7 + 0x31) = *(byte *)((int)puVar7 + 0x31) | 0x80;
+        }
+      }
+      cVar1 = DAT_ram_000162a6;
+      if (param_1 == 0) {
+        cVar1 = DAT_ram_000162aa;
+      }
+      puVar7[4] = (uint)(cVar1 == '\x02') << 0x12 | puVar7[4] & 0xfffbffff;
+      if (param_4 != 0) {
+        *puVar7 = *puVar7 | 1;
+      }
+      puVar7[4] = puVar7[4] & 0xfff7ffff | (param_1 & 1) << 0x13;
+      puVar7[5] = 0x100;
+      ieee80211_post_hmac_tx(iVar4);
+      (**(code **)(_g_osi_funcs_p + 0x58))(_g_wifi_global_lock);
+    }
+  }
+  return iVar3;
+}
+
+ (GhidraScript)  
+INFO  DecompileSelected.java> 
+===== ieee80211_raw_frame_sanity_check ===== (GhidraScript)  
+INFO  DecompileSelected.java> ENTRY=ram:00013198 (GhidraScript)  
+INFO  DecompileSelected.java> SIGNATURE=undefined ieee80211_raw_frame_sanity_check(void) (GhidraScript)  
+INFO  DecompileSelected.java> 
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+undefined4 ieee80211_raw_frame_sanity_check(uint param_1,byte *param_2,uint param_3,int param_4)
+
+{
+  byte bVar1;
+  undefined4 uVar2;
+  int iVar3;
+  int iVar4;
+  char *pcVar5;
+  byte bVar6;
+  byte bVar7;
+  undefined1 auStack_28 [8];
+  
+  if (param_2 == (byte *)0x0) {
+    wifi_log(1,0x40,1,"invalid buffer");
+    return 0x102;
+  }
+  if ((param_3 < 0x18) || (0x5dc < (int)param_3)) {
+    wifi_log(1,0x40,1,"invalid buffer length: %d");
+    return 0x102;
+  }
+  (**(code **)(_g_osi_funcs_p + 0x54))(_g_wifi_global_lock);
+  iVar4 = _g_osi_funcs_p;
+  if (((param_1 != 0) && (iVar4 = _g_wifi_global_lock, param_1 != 1)) || (iVar4 == 0)) {
+    wifi_log(1,0x40,1,"invalid interface %d",param_1);
+    uVar2 = 0x3004;
+    goto _L1073;
+  }
+  bVar1 = *param_2;
+  bVar6 = bVar1 & 0xc;
+  bVar7 = bVar1 & 0xf0;
+  if ((param_2[1] & 0x40) == 0) {
+    if (bVar6 == 8) {
+      if (-1 < (char)bVar7) goto _L1077;
+      bVar6 = 8;
+      pcVar5 = "unsupport QoS frame type: %x%x";
+    }
+    else {
+      if (((bVar1 & 0xc) == 0) && (((bVar7 == 0x80 || ((bVar1 & 0xe0) == 0x40)) || (bVar7 == 0xd0)))
+         ) {
+_L1077:
+        wifi_get_macaddr(param_1 & 0xff,auStack_28);
+        iVar3 = memcmp(auStack_28,param_2 + 10,6);
+        if (param_1 == 0) {
+          if ((*(int *)(iVar4 + 0xe4) == 0) ||
+             (iVar4 = memcmp((void *)(*(int *)(iVar4 + 0xe4) + 4),param_2 + 4,6), iVar4 != 0))
+          goto _L1079;
+        }
+        else {
+          iVar4 = cnx_node_search(param_2 + 4);
+          if (iVar4 == 0) goto _L1079;
+        }
+        if (iVar3 != 0) goto _L1079;
+        if (param_4 == 0) {
+          pcVar5 = "en_sys_seq should be true to avoid side-effect to WiFi connection";
+        }
+        else if ((param_2[1] & 0x3c) == 0) {
+          if ((*param_2 & 0xc) != 8) {
+_L1079:
+            (**(code **)(_g_osi_funcs_p + 0x58))(_g_wifi_global_lock);
+            return 0;
+          }
+          bVar6 = param_2[1] & 3;
+          if (param_1 == 0) {
+            if (bVar6 == 1) goto _L1079;
+            pcVar5 = "invalid frame control, sta->ap ToDS should be 1, FromDS should be 0";
+          }
+          else {
+            if (bVar6 == 2) goto _L1079;
+            pcVar5 = "invalid frame control, ap->sta ToDS should be 0, FromDS should be 1";
+          }
+        }
+        else {
+          pcVar5 = "invalid frame control, retry/power/frag/more data bit should not set";
+        }
+        goto _L1093;
+      }
+      pcVar5 = "unsupport frame type: %x%x";
+    }
+    wifi_log(1,0x40,1,pcVar5,bVar6);
+  }
+  else {
+    pcVar5 = "invalid frame control, unsupport crypto frame";
+_L1093:
+    wifi_log(1,0x40,1,pcVar5);
+  }
+  uVar2 = 0x102;
+_L1073:
+  (**(code **)(_g_osi_funcs_p + 0x58))(_g_wifi_global_lock);
+  return uVar2;
+}
+
+ (GhidraScript)  
+INFO  DecompileSelected.java> 
+===== ieee80211_post_hmac_tx ===== (GhidraScript)  
+INFO  DecompileSelected.java> ENTRY=ram:00010288 (GhidraScript)  
+INFO  DecompileSelected.java> SIGNATURE=undefined ieee80211_post_hmac_tx(void) (GhidraScript)  
+INFO  DecompileSelected.java> 
+undefined4 ieee80211_post_hmac_tx(int param_1)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  
+  if (DAT_ram_00016250 == '\0') {
+    *(undefined4 *)(param_1 + 0x30) = 0;
+    *DAT_ram_00015224 = param_1;
+    DAT_ram_00015224 = (int *)(param_1 + 0x30);
+    iVar1 = pp_post(5,0);
+    uVar2 = 0;
+    if (iVar1 != 0) {
+      uVar2 = 0x3012;
+    }
+  }
+  else {
+    ieee80211_recycle_cache_eb();
+    uVar2 = 0x3002;
+  }
+  return uVar2;
+}
+
+ (GhidraScript)  
+INFO  DecompileSelected.java> 
+===== ieee80211_output_raw_process ===== (GhidraScript)  
+INFO  DecompileSelected.java> ENTRY=ram:00012fd6 (GhidraScript)  
+INFO  DecompileSelected.java> SIGNATURE=undefined ieee80211_output_raw_process(void) (GhidraScript)  
+INFO  DecompileSelected.java> 
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+undefined4 ieee80211_output_raw_process(uint param_1,int param_2)
+
+{
+  ushort uVar1;
+  ushort uVar2;
+  short sVar3;
+  bool bVar4;
+  bool bVar5;
+  int iVar6;
+  undefined4 uVar7;
+  int iVar8;
+  uint *puVar9;
+  uint uVar10;
+  int iVar11;
+  undefined1 auStack_28 [12];
+  
+  iVar6 = _g_osi_funcs_p;
+  if (param_1 == 1) {
+    iVar6 = _g_wifi_global_lock;
+  }
+  if (iVar6 == 0) {
+    ic_ebuf_recycle_tx(param_2);
+    wifi_log(1,0x40,2,"conn is released");
+    uVar7 = 0x102;
+  }
+  else {
+    puVar9 = *(uint **)(param_2 + 4);
+    uVar10 = puVar9[1];
+    if ((*(ushort *)(param_2 + 0x24) & 0x2000) != 0) {
+      uVar10 = uVar10 + 8;
+    }
+    uVar1 = *(ushort *)(param_2 + 0x14);
+    uVar2 = *(ushort *)(param_2 + 0x16);
+    *puVar9 = *puVar9 | 0x80000000;
+    *puVar9 = *puVar9 | 0x40000000;
+    *puVar9 = *puVar9 & 0xdfffffff;
+    *puVar9 = ((uint)uVar2 + (uint)uVar1 & 0x3fff) << 0xe | *puVar9 & 0xf0003fff;
+    iVar11 = *(int *)(param_2 + 0x34);
+    *(undefined1 *)(iVar11 + 4) = 7;
+    uVar7 = hal_now();
+    puVar9 = *(uint **)(param_2 + 0x34);
+    *(undefined4 *)(iVar11 + 0x18) = uVar7;
+    puVar9[4] = puVar9[4] & 0xfff7ffff | (param_1 & 1) << 0x13;
+    if ((*(byte *)(uVar10 + 4) & 1) != 0) {
+      *puVar9 = *puVar9 | 0x402;
+    }
+    bVar5 = (*puVar9 & 1) != 0;
+    if (bVar5) {
+      *puVar9 = *puVar9 & 0xfffffffe;
+    }
+    wifi_get_macaddr(param_1,auStack_28);
+    iVar11 = memcmp(auStack_28,(void *)(uVar10 + 10),6);
+    if (*(int *)(iVar6 + 0x98) == 5) {
+      if (param_1 == 0) {
+        iVar6 = *(int *)(iVar6 + 0xe4);
+        bVar4 = false;
+        if (iVar6 != 0) {
+          iVar8 = memcmp((void *)(iVar6 + 4),(void *)(uVar10 + 4),6);
+          bVar4 = iVar8 == 0;
+        }
+      }
+      else {
+        iVar6 = cnx_node_search(uVar10 + 4);
+        bVar4 = iVar6 != 0;
+      }
+    }
+    else {
+      iVar6 = 0;
+      bVar4 = false;
+    }
+    if (bVar5) {
+      if ((iVar11 == 0) && (bVar4)) {
+        sVar3 = *(short *)(iVar6 + 0xce);
+        *(short *)(iVar6 + 0xce) = sVar3 + 1;
+      }
+      else {
+        sVar3 = _LANCHOR29;
+        _LANCHOR29 = _LANCHOR29 + 1;
+      }
+      *(short *)(uVar10 + 0x16) = sVar3 << 4;
+    }
+    iVar6 = ppTxPkt(param_2,1);
+    uVar7 = 0;
+    if (iVar6 != 0) {
+      wifi_log(1,0x40,2,"tx op fail");
+      uVar7 = 0;
+    }
+  }
+  return uVar7;
+}
+
+ (GhidraScript)  
+INFO  ANALYZING changes made by post scripts: file:///D:/PROJECTS/AIRTOOLS-ESP32/analysis/net80211/verification/archive_members/ieee80211_output.o (HeadlessAnalyzer)  
+INFO  REPORT: Post-analysis succeeded for file: file:///D:/PROJECTS/AIRTOOLS-ESP32/analysis/net80211/verification/archive_members/ieee80211_output.o (HeadlessAnalyzer)  
+INFO  /ieee80211_output.o: file created (Tatsu) (LocalFileSystem)  
+INFO  REPORT: Save succeeded for: /ieee80211_output.o (esp32c6-current-net80211:/ieee80211_output.o) (HeadlessAnalyzer)  
+INFO  REPORT: Import succeeded (HeadlessAnalyzer)  
