@@ -84,6 +84,8 @@ String AirtoolsCommandRouter::handleStatus() const
     String response;
     response += "OK airtools=1 transport=ble firmware=";
     response += AIRTOOLS_FIRMWARE_VERSION_TEXT;
+    response += " version=";
+    response += AIRTOOLS_FIRMWARE_VERSION_TEXT;
     response += "\n";
     response += wifiAir.formatStatus();
     response += " ";

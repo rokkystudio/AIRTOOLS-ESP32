@@ -75,7 +75,15 @@ void DisplayStatus::begin()
     gfx->setTextColor(COLOR_WHITE);
     gfx->setTextSize(2);
     gfx->setCursor(STATUS_X, 6);
-    gfx->println("AIRTOOLS");
+    gfx->print("AIRTOOLS");
+
+    // Firmware version stays on the title line, in a smaller font.
+    gfx->setTextSize(1);
+    gfx->setTextColor(COLOR_YELLOW);
+    gfx->setCursor(STATUS_X + 8 * 12 + 6, 12);
+    gfx->print("v");
+    gfx->print(AIRTOOLS_FIRMWARE_VERSION_TEXT);
+    gfx->setTextColor(COLOR_WHITE);
 
     channelCanvas = new Arduino_Canvas(
         gfx->width() - STATUS_X,

@@ -2,6 +2,7 @@
 .vscode
 .idea
 cmake-build-*
+dist
 *.bin
 *.elf
 *.map
